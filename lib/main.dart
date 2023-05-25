@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Fleet Monitoring App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: Login(),
+      home: const Login(),
     );
   }
 }

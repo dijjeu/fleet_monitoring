@@ -25,6 +25,8 @@ class _RegisterState extends State<Register>{
   // define and initialize the obscureText variable
   bool _obscureText = true;
 
+  String _message = '';
+
   /*void _submitForm() {
     if (phoneController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()),
@@ -47,6 +49,26 @@ class _RegisterState extends State<Register>{
       });
     }
   }*/
+
+
+  Future<void> _register() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String phone = phoneController.text;
+    String password = passwordController.text;
+
+    if (phone.isNotEmpty && password.isNotEmpty) {
+      await prefs.setString('phone', phone);
+      await prefs.setString('password', password);
+
+      setState(() {
+        _message = 'Registration successful!';
+      });
+    } else {
+      setState(() {
+        _message = 'Please enter both phone and password.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +172,7 @@ class _RegisterState extends State<Register>{
                 /// -- login button
                 ElevatedButton(
                     onPressed: () {
+                      _register();
                       if(_formKey.currentState!.validate()) {
                         // Navigate the user to the home page
                         Navigator.push(context, MaterialPageRoute(builder: (context) => CompleteProfile()));
@@ -175,7 +198,7 @@ class _RegisterState extends State<Register>{
                           Navigator.push(context, MaterialPageRoute(builder: (context) => Login()),
                           );
                         },
-                        child: const Text('Signup')
+                        child: const Text('Login')
                     ),
                   ],
                 ),

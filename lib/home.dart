@@ -1,4 +1,5 @@
 import 'package:fleet_monitoring/notification.dart';
+import 'package:fleet_monitoring/utils/stored_values.dart';
 import 'package:fleet_monitoring/vehicle.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_entry.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
@@ -71,6 +72,13 @@ class _HomeState extends State<Home>{
               title: const Text('Log out'),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const Login()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Stored Users',),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => StoredValuesPage()));
               },
             ),
           ],

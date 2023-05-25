@@ -1,3 +1,4 @@
+import 'package:fleet_monitoring/dashboard.dart';
 import 'package:fleet_monitoring/login/register.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,17 +11,45 @@ class Login extends StatefulWidget {
 
   @override
   State<Login> createState() => _LoginState();
-
 }
 
-class _LoginState extends State<Login>{
-
+class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  String _message = '';
 
-  // define and initialize the obscureText variable
   bool _obscureText = true;
+
+  Future<void> _login() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedPhone = prefs.getString('phone');
+    String? savedPassword = prefs.getString('password');
+    String phone = phoneController.text;
+    String password = passwordController.text;
+
+    if (savedPhone != null && savedPassword != null) {
+      if (phone == savedPhone && password == savedPassword) {
+        setState(() {
+          _message = 'Login successful!';
+        });
+
+        // Navigate to the desired screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => DashboardScreen()),
+        );
+      } else {
+        setState(() {
+          _message = 'Invalid phone number or password.';
+        });
+      }
+    } else {
+      setState(() {
+        _message = 'Account does not exist.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +72,6 @@ class _LoginState extends State<Login>{
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                /// -- phone number input
                 TextFormField(
                   controller: phoneController,
                   decoration: const InputDecoration(
@@ -59,8 +86,6 @@ class _LoginState extends State<Login>{
                     return null;
                   },
                 ),
-
-                /// -- password input
                 TextFormField(
                   controller: passwordController,
                   obscureText: _obscureText,
@@ -88,45 +113,38 @@ class _LoginState extends State<Login>{
                   },
                 ),
                 const SizedBox(height: 20),
-
-                /// -- login button
                 ElevatedButton(
-                    onPressed: () {
-                      if(_formKey.currentState!.validate()) {
-                        // Navigate the user to the home page
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Login successful!')
-                          ),
-                        );
-
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Please complete all fields'),
-                          ),
-                        );
-                      }
-                    },
-                    child: const Text('Login')
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _login();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please complete all fields'),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Login'),
                 ),
                 const SizedBox(height: 10),
-
-                /// -- create an account
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text('New User?'),
                     TextButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => Register()),
-                          );
-                        },
-                        child: const Text('Create an Account')
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Register()),
+                        );
+                      },
+                      child: const Text('Create an Account'),
                     ),
                   ],
                 ),
+                SizedBox(height: 10),
+                Text(_message),
               ],
             ),
           ),
@@ -134,5 +152,4 @@ class _LoginState extends State<Login>{
       ),
     );
   }
-
 }
