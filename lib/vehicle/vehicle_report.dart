@@ -13,7 +13,7 @@ class VehicleReport extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fleet Monitoring'),
+        title: const Text('Vehicle Reports & Maintenance'),
       ),
 
       /// -- DRAWER NAVIGATION --///
@@ -64,35 +64,55 @@ class VehicleReport extends StatelessWidget {
           ],
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Vehicle Reports & Maintenance',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: 35,
-              fontWeight: FontWeight.w800,
-              color: Colors.pink[300],
+      body: Padding(
+        padding: const EdgeInsets.all(30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Select a service.',
+              style: GoogleFonts.poppins(
+                fontSize: 25,
+                fontWeight: FontWeight.normal,
+                color: Colors.pink[300],
+              ),
             ),
-          ),
-          Text(
-            'Select a service.',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: 28,
-              fontWeight: FontWeight.normal,
-              color: Colors.pink[300],
-            ),
-          ),
+
+            oilChange(),
 
 
 
-        ],
+
+          ],
+        ),
       ),
     );
   }
+
+  Widget oilChange() {
+    return Container(
+      height: 200,
+      width: 150,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+      ),
+      /*child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.oil_barrel, size: 100),
+          SizedBox(height: 10),
+          Text('Oil Change'),
+        ],
+      ),*/
+      child: ListTile(
+        
+      ),
+    );
+  }
+
+
 
 
 }
