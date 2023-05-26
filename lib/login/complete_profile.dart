@@ -1,4 +1,4 @@
-import 'package:fleet_monitoring/dashboard.dart';
+import 'package:fleet_monitoring/home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -170,7 +170,7 @@ class _CompleteProfileState extends State<CompleteProfile>{
                       onPressed: () {
                         if(_formKey.currentState!.validate()) {
                           // Navigate the user to the home page
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text('Signup successful!')

@@ -1,8 +1,10 @@
-import 'package:fleet_monitoring/dashboard.dart';
+import 'package:fleet_monitoring/home.dart';
 import 'package:fleet_monitoring/login/register.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../auth/auth.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) :super(key: key);
@@ -20,34 +22,31 @@ class _LoginState extends State<Login> {
   bool _obscureText = true;
 
   Future<void> _login() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? savedPhone = prefs.getString('phone');
-    String? savedPassword = prefs.getString('password');
     String phone = phoneController.text;
     String password = passwordController.text;
 
-    if (savedPhone != null && savedPassword != null) {
-      if (phone == savedPhone && password == savedPassword) {
-        setState(() {
-          _message = 'Login successful!';
-        });
+    String? loggedInUser = await Authentication.login(phone, password);
 
-        // Navigate to the desired screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => DashboardScreen()),
-        );
-      } else {
-        setState(() {
-          _message = 'Invalid phone number or password.';
-        });
-      }
+    if (loggedInUser != null) {
+      setState(() {
+        _message = 'Login successful!';
+      });
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('loggedInUser', loggedInUser);
+
+      // Navigate to the desired screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      );
     } else {
       setState(() {
-        _message = 'Account does not exist.';
+        _message = 'Invalid phone number or password.';
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +113,10 @@ class _LoginState extends State<Login> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      _login();
+                      if (Authentication.getLoggedInUser() != null) {
+                        _login();
+                      }
+                      //_login();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

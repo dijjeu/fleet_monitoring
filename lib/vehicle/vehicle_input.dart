@@ -31,14 +31,64 @@ class _AddVehicleState extends State<AddVehicle> {
 
   List<VehicleDetails> vehicleDetails = List.empty(growable: true);
 
+  String _message = '';
+
   int selectedIndex = -1;
+
+  Future<void> _storeVehicle() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String carMake = carMakeController.text;
+    String yearModel = yearModelController.text;
+    String color = colorController.text;
+    String plateNum = plateNumController.text;
+    String regisNum = regisNumController.text;
+    String regisDate = regisDateController.text;
+    String orNum = orNumController.text;
+    String orDateIssued = orDateIssuedController.text;
+
+    if (carMake.isNotEmpty &&
+        yearModel.isNotEmpty &&
+        color.isNotEmpty &&
+        plateNum.isNotEmpty &&
+        regisNum.isNotEmpty &&
+        regisDate.isNotEmpty &&
+        orNum.isNotEmpty &&
+        orDateIssued.isNotEmpty) {
+      String vehicleKey = plateNum + regisNum;
+
+      SharedPreferences userPrefs = await SharedPreferences.getInstance();
+      String? loggedInUser = userPrefs.getString('loggedInUser');
+
+      if (loggedInUser != null) {
+        List<String> existingVehicles = userPrefs.getStringList(loggedInUser) ?? [];
+        existingVehicles.add(vehicleKey);
+        await userPrefs.setStringList(loggedInUser, existingVehicles);
+        await userPrefs.setStringList(vehicleKey, [
+          carMake,
+          yearModel,
+          color,
+          plateNum,
+          regisNum,
+          regisDate,
+          orNum,
+          orDateIssued,
+        ]);
+      }
+
+      setState(() {
+        _message = 'Vehicle successfully added!';
+      });
+    } else {
+      setState(() {
+        _message = 'Please complete all fields.';
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fleet Monitoring'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Center(
@@ -274,24 +324,16 @@ class _AddVehicleState extends State<AddVehicle> {
                       String orNum = orNumController.text.trim();
                       String orDateIssued = orDateIssuedController.text.trim();
 
-                      if (carMake.isNotEmpty &&
-                          yearModel.isNotEmpty &&
-                          color.isNotEmpty &&
-                          plateNum.isNotEmpty &&
-                          regisNum.isNotEmpty &&
-                          regisDate.isNotEmpty &&
-                          orNum.isNotEmpty &&
-                          orDateIssued.isNotEmpty) {
+                      if (carMake.isNotEmpty && yearModel.isNotEmpty &&
+                          color.isNotEmpty && plateNum.isNotEmpty &&
+                          regisNum.isNotEmpty && regisDate.isNotEmpty &&
+                          orNum.isNotEmpty && orDateIssued.isNotEmpty) {
                         setState(() {
                           vehicleDetails.add(VehicleDetails(
-                              carMake: carMake,
-                              color: color,
-                              yearModel: yearModel,
-                              plateNum: plateNum,
-                              regisNum: regisNum,
-                              orNum: orNum,
-                              regisDate: regisDate,
-                              orDateIssued: orDateIssued));
+                              carMake: carMake, color: color,
+                              yearModel: yearModel, plateNum: plateNum,
+                              regisNum: regisNum, orNum: orNum,
+                              regisDate: regisDate, orDateIssued: orDateIssued));
                         });
 
                         carMakeController.text = '';
@@ -304,6 +346,7 @@ class _AddVehicleState extends State<AddVehicle> {
                         orNumController.text = '';
                         orDateIssuedController.text = '';
 
+                        _storeVehicle(); // Store the vehicle before navigating back
                         Navigator.pop(context);
                       }
                     },
