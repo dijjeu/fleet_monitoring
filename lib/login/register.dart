@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../home.dart';
-
 class Register extends StatefulWidget {
   const Register({Key? key}) :super(key: key);
 
@@ -26,30 +24,6 @@ class _RegisterState extends State<Register>{
   bool _obscureText = true;
 
   String _message = '';
-
-  /*void _submitForm() {
-    if (phoneController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()),
-      );
-    } else {
-      showDialog(context: context, builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Login Error'),
-          content: const Text('Please enter valid credentials'),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OKAY'),
-            ),
-          ],
-        );
-      });
-    }
-  }*/
-
 
   Future<void> _register() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -184,7 +158,7 @@ class _RegisterState extends State<Register>{
                         );
                       }
                     },
-                    child: const Text('Signup')
+                    child: const Text('Sign Up')
                 ),
                 const SizedBox(height: 10),
 

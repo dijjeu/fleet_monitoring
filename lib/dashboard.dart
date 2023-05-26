@@ -1,5 +1,5 @@
-import 'package:fleet_monitoring/home.dart';
 import 'package:fleet_monitoring/notification.dart';
+import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
 import 'package:flutter/material.dart';
 
@@ -17,28 +17,28 @@ class DashboardScreen extends StatelessWidget {
             title: 'Vehicles',
             icon: Icons.directions_car,
             onTap: () {
-             Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+             Navigator.push(context, MaterialPageRoute(builder: (context) => const AddVehicle()));
             },
           ),
           DashboardCard(
             title: 'Reports',
             icon: Icons.report,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => VehicleReport()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const VehicleReport()));
             },
           ),
           DashboardCard(
             title: 'Services',
             icon: Icons.build,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => VehicleReport()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const VehicleReport()));
             },
           ),
           DashboardCard(
             title: 'Notifications',
             icon: Icons.notifications,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Notif()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const Notif()));
             },
           ),
         ],

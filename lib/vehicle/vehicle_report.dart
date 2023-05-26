@@ -1,4 +1,3 @@
-import 'package:fleet_monitoring/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,54 +15,6 @@ class VehicleReport extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Vehicle Reports & Maintenance'),
-          ),
-          /// -- DRAWER NAVIGATION --///
-          drawer: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                const DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                  ),
-                  child: Text(
-                    'Drawer Header',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.home_rounded),
-                  title: const Text('Home'),
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.report),
-                  title: const Text('Vehicle Reports'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.notifications),
-                  title: const Text('Notifications'),
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Notif()));
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.logout_rounded),
-                  title: const Text('Log out'),
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Login()));
-                  },
-                ),
-              ],
-            ),
           ),
           body: Padding(
             padding: const EdgeInsets.all(20),

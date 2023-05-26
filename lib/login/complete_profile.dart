@@ -1,4 +1,4 @@
-import 'package:fleet_monitoring/home.dart';
+import 'package:fleet_monitoring/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -66,128 +66,130 @@ class _CompleteProfileState extends State<CompleteProfile>{
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(50),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // -- header 'complete your profile' -- //
-                Text(
-                  'Complete your profile',
-                  style: GoogleFonts.poppins(
-                    fontSize: 35,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.pink[300],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // -- header 'complete your profile' -- //
+                  Text(
+                    'Complete your profile',
+                    style: GoogleFonts.poppins(
+                      fontSize: 35,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.pink[300],
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                /// -- FIRST name input
-                TextFormField(
-                  controller: fnameController,
-                  decoration: const InputDecoration(
-                    labelText: 'First Name',
-                    prefixIcon: Icon(Icons.person),
+                  /// -- FIRST name input
+                  TextFormField(
+                    controller: fnameController,
+                    decoration: const InputDecoration(
+                      labelText: 'First Name',
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                    keyboardType: TextInputType.name,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your first name';
+                      }
+                      return null;
+                    },
                   ),
-                  keyboardType: TextInputType.name,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your first name';
-                    }
-                    return null;
-                  },
-                ),
 
-                /// -- LAST name input
-                TextFormField(
-                  controller: lnameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Name',
-                    prefixIcon: Icon(Icons.person),
+                  /// -- LAST name input
+                  TextFormField(
+                    controller: lnameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Last Name',
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                    keyboardType: TextInputType.name,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your last name';
+                      }
+                      return null;
+                    },
                   ),
-                  keyboardType: TextInputType.name,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your last name';
-                    }
-                    return null;
-                  },
-                ),
 
-                /// -- driver's license number input
-                TextFormField(
-                  controller: licenseNumController,
-                  decoration: const InputDecoration(
-                      labelText: 'Driver\'s License Number',
-                    prefixIcon: Icon(Icons.numbers_rounded),
+                  /// -- driver's license number input
+                  TextFormField(
+                    controller: licenseNumController,
+                    decoration: const InputDecoration(
+                        labelText: 'Driver\'s License Number',
+                      prefixIcon: Icon(Icons.numbers_rounded),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your driver\'s license number.';
+                      }
+                      return null;
+                    },
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your driver\'s license number.';
-                    }
-                    return null;
-                  },
-                ),
 
-                TextFormField(
-                  controller: licenseExpController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.calendar_month_rounded),
-                    labelText: 'Enter Driver\'s License Expiry',
-                  ),
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2101)
-                    );
-                    if (pickedDate != null) {
-                      print(pickedDate);
-                      String formattedDate = DateFormat('yyyy - MM - dd').format(pickedDate);
-                      print(formattedDate);
-                      setState(() {
-                        licenseExpController.text = formattedDate;
-                      });
-                    } else {
-                      print('Date is not selected');
-                    }
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your driver\'s license expiry date.';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 20),
-
-                /// -- complete profile button
-                ElevatedButton(
-                    onPressed: () {
-                      if(_formKey.currentState!.validate()) {
-                        // Navigate the user to the home page
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Signup successful!')
-                          ),
-                        );
+                  TextFormField(
+                    controller: licenseExpController,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.calendar_month_rounded),
+                      labelText: 'Enter Driver\'s License Expiry',
+                    ),
+                    readOnly: true,
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2101)
+                      );
+                      if (pickedDate != null) {
+                        print(pickedDate);
+                        String formattedDate = DateFormat('yyyy - MM - dd').format(pickedDate);
+                        print(formattedDate);
+                        setState(() {
+                          licenseExpController.text = formattedDate;
+                        });
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Please complete all fields'),
-                          ),
-                        );
+                        print('Date is not selected');
                       }
                     },
-                    child: const Text('Login')
-                ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your driver\'s license expiry date.';
+                      }
+                      return null;
+                    },
+                  ),
 
-                const SizedBox(height: 10),
-              ],
+                  const SizedBox(height: 20),
+
+                  /// -- complete profile button
+                  ElevatedButton(
+                      onPressed: () {
+                        if(_formKey.currentState!.validate()) {
+                          // Navigate the user to the home page
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Signup successful!')
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please complete all fields'),
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text('Login')
+                  ),
+
+                  const SizedBox(height: 10),
+                ],
+              ),
             ),
           ),
         ),

@@ -1,9 +1,9 @@
+import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'home.dart';
 import 'login/login.dart';
 
 class Notif extends StatelessWidget {
@@ -37,7 +37,7 @@ class Notif extends StatelessWidget {
               leading: const Icon(Icons.home_rounded),
               title: const Text('Home',),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const AddVehicle()));
               },
             ),
             ListTile(
