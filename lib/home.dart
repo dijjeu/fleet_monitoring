@@ -1,5 +1,8 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:fleet_monitoring/auth/auth.dart';
 import 'package:fleet_monitoring/dashboard_screen.dart';
 import 'package:fleet_monitoring/notification.dart';
+import 'package:fleet_monitoring/utils/stored_values.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
 import 'package:flutter/material.dart';
@@ -13,145 +16,50 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  int _currentIndex = 0;
+  final navigationKey = GlobalKey<CurvedNavigationBarState>();
+  int _currentIndex = 2;
 
-  final List<Widget> _pages = [
-    const DashboardScreen(),
+  final pages = [
     const AddVehicle(),
-    const Notif(),
     const VehicleReport(),
+    const DashboardScreen(),
+    const Notif(),
+    StoredValuesPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
+
+    final items = <Widget>[
+      const Icon(Icons.directions_car_rounded), //vehicle
+      const Icon(Icons.build_rounded), // services
+      const Icon(Icons.home_rounded), //home
+      const Icon(Icons.notifications), //notification
+      const Icon(Icons.person_rounded), // profile
+    ];
+
     return Scaffold(
-      body: _pages[_currentIndex],
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Container(
-          padding: EdgeInsets.all(12),
-          margin: EdgeInsets.symmetric(horizontal: 34),
-          decoration: BoxDecoration(
-            color: Colors.blue[800],
-            borderRadius: BorderRadius.all(Radius.circular(24)),
-          ),
+      extendBody: false,
+      body: pages[_currentIndex],
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          iconTheme: const IconThemeData(color: Colors.white),
+        ),
+        child: CurvedNavigationBar(
+          key: navigationKey,
+          color: Colors.blue.shade800,
+          buttonBackgroundColor: Colors.red.shade400,
+          backgroundColor: Colors.transparent,
           height: 60.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.home),
-                color: _currentIndex == 0 ? Colors.red[400] : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 0;
-                  });
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.directions_car),
-                color: _currentIndex == 1 ? Colors.red[400] : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 1;
-                  });
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.notifications),
-                color: _currentIndex == 2 ? Colors.red[400] : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 2;
-                  });
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.person),
-                color: _currentIndex == 3 ? Colors.red[400] : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 3;
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-
-    );
-  }
-
-
-  Widget _dashboard (BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      children: <Widget>[
-        DashboardCard(
-          title: 'Vehicles',
-          icon: Icons.directions_car,
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const AddVehicle()));
+          animationCurve: Curves.easeInOut,
+          animationDuration: const Duration(milliseconds: 300),
+          index: _currentIndex,
+          items: items,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
           },
-        ),
-        DashboardCard(
-          title: 'Reports',
-          icon: Icons.report,
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const VehicleReport()));
-          },
-        ),
-        DashboardCard(
-          title: 'Services',
-          icon: Icons.build,
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const VehicleReport()));
-          },
-        ),
-        DashboardCard(
-          title: 'Notifications',
-          icon: Icons.notifications,
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const Notif()));
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class DashboardCard extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const DashboardCard({
-    Key? key,
-    required this.title,
-    required this.icon,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      margin: const EdgeInsets.all(16.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(icon, size: 64.0),
-              const SizedBox(height: 8.0),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 16.0),
-              ),
-            ],
-          ),
         ),
       ),
     );

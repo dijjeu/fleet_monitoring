@@ -1,3 +1,4 @@
+import 'package:fleet_monitoring/services/pms.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,15 +14,14 @@ class VehicleReport extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Vehicle Reports & Maintenance'),
-          ),
           body: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              //mainAxisSize: MainAxisSize.max,
               children: [
+                const SizedBox(height: 30),
                 Text(
                   'Select a service.',
                   style: GoogleFonts.poppins(
@@ -63,7 +63,7 @@ class VehicleReport extends StatelessWidget {
                         leading: Image.asset('assets/images/maintenance.png', scale: 12),
                         title: const Text('Preventive Maintenance Schedule'),
                         onTap: () {
-                          Navigator.pop(context);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => PMSchedule()));
                         },
                       ),
                       const SizedBox(height: 10,),
