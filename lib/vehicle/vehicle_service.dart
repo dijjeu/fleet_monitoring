@@ -1,20 +1,23 @@
-import 'package:fleet_monitoring/services/air_filter.dart';
 import 'package:fleet_monitoring/services/battery_replace.dart';
-import 'package:fleet_monitoring/services/new_tires.dart';
-import 'package:fleet_monitoring/services/pms.dart';
-import 'package:fleet_monitoring/services/wheel_balance.dart';
 import 'package:fleet_monitoring/services/wiper_replace.dart';
-import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
-import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
-import '../notification.dart';
+import '../services/service_card.dart';
 import '../services/service_entry.dart';
 
-class VehicleService extends StatelessWidget {
-  VehicleService({Key? key}) : super(key: key);
+class VehicleService extends StatefulWidget {
+  @override
+  State<VehicleService> createState() => _VehicleServiceState();
+}
+
+class _VehicleServiceState extends State<VehicleService> {
+
+  TextEditingController odometerController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+  TextEditingController serviceDateController = TextEditingController();
+  TextEditingController serviceTimeController = TextEditingController();
 
   List<ServiceEntry> serviceEntry = List.empty(growable: true);
 
@@ -42,7 +45,7 @@ class VehicleService extends StatelessWidget {
               color: Colors.pink[300],
             ),
           ),
-          Container(
+          SizedBox(
             height: 300,
             child: GridView.count(
               crossAxisCount: 3,
@@ -52,9 +55,7 @@ class VehicleService extends StatelessWidget {
                   image: 'assets/images/maintenance.png',
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const PMSchedule()),
-                    );
+                        context, MaterialPageRoute(builder: (context) => serviceInput()));
                   },
                 ),
                 ServiceCard(
@@ -62,9 +63,7 @@ class VehicleService extends StatelessWidget {
                   image: 'assets/images/wiper.png',
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => WiperReplace()),
-                    );
+                        context, MaterialPageRoute(builder: (context) => serviceInput()));
                   },
                 ),
                 ServiceCard(
@@ -72,9 +71,7 @@ class VehicleService extends StatelessWidget {
                   image: 'assets/images/car-battery.png',
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => BatteryReplace()),
-                    );
+                        context, MaterialPageRoute(builder: (context) => serviceInput()));
                   },
                 ),
                 ServiceCard(
@@ -82,9 +79,7 @@ class VehicleService extends StatelessWidget {
                   image: 'assets/images/air-filter.png',
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const PMSchedule()),
-                    );
+                        context, MaterialPageRoute(builder: (context) => serviceInput()));
                   },
                 ),
                 ServiceCard(
@@ -92,9 +87,7 @@ class VehicleService extends StatelessWidget {
                   image: 'assets/images/tires.png',
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => WiperReplace()),
-                    );
+                        context, MaterialPageRoute(builder: (context) => serviceInput()));
                   },
                 ),
                 ServiceCard(
@@ -102,9 +95,7 @@ class VehicleService extends StatelessWidget {
                   image: 'assets/images/wheel.png',
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => BatteryReplace()),
-                    );
+                        context, MaterialPageRoute(builder: (context) => serviceInput()));
                   },
                 ),
               ],
@@ -125,11 +116,11 @@ class VehicleService extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 serviceEntry.isEmpty
-                  ? const Text('No reports listed yet')
-                  : Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (context, index) => getRow(index),
-                    ),
+                    ? const Text('No reports listed yet')
+                    : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: serviceEntry.length,
+                    itemBuilder: (context, index) => getRow(index),
                   ),
               ],
             ),
@@ -155,39 +146,140 @@ class VehicleService extends StatelessWidget {
       ),
     );
   }
-}
 
-class ServiceCard extends StatelessWidget {
-  final String title;
-  final String image;
-  final VoidCallback onTap;
 
-  const ServiceCard({
-    Key? key,
-    required this.title,
-    required this.image,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      margin: const EdgeInsets.all(8.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          alignment: Alignment.center,
-          child: ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              Image.asset(image, height: 50),
-              const SizedBox(height: 8.0),
+  Widget serviceInput() {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(30),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const SizedBox(height: 50),
+              /// -- registration details -- ///
               Text(
-                title,
+                'Registration Details',
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 14.0),
+                style: GoogleFonts.poppins(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.pink[300],
+                ),
+              ),
+              TextField(
+                controller: odometerController,
+                decoration:
+                const InputDecoration(labelText: 'Odometer before service'),
+              ),
+              TextFormField(
+                controller: serviceDateController,
+                decoration: const InputDecoration(
+                  labelText: 'Service Date',
+                  prefixIcon: Icon(Icons.calendar_month_rounded),
+                ),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101)
+                  );
+                  if (pickedDate != null) {
+                    print(pickedDate);
+                    String formattedDate = DateFormat('MM - dd - yyyy').format(pickedDate);
+                    print(formattedDate);
+                    setState(() {
+                      serviceDateController.text = formattedDate;
+                    });
+                  } else {
+                    print('Date is not selected');
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the service date.';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: serviceTimeController,
+                decoration: const InputDecoration(
+                  labelText: 'Service Time',
+                  prefixIcon: Icon(Icons.access_time),
+                ),
+                readOnly: true,
+                onTap: () async {
+                  TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  if (pickedTime != null) {
+                    print(pickedTime);
+                    String formattedTime = pickedTime.format(context);
+                    print(formattedTime);
+                    setState(() {
+                      serviceTimeController.text = formattedTime;
+                    });
+                  } else {
+                    print('Time is not selected');
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the service time.';
+                  }
+                  return null;
+                },
+              ),
+              TextField(
+                controller: locationController,
+                decoration: const InputDecoration(labelText: 'Location of service'),
+              ),
+
+              /// -- text buttons -- ///
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    child: const Text('Done'),
+                    onPressed: () {
+                      final String odometer = odometerController.text.trim();
+                      final String location = locationController.text.trim();
+                      final String serviceDate = serviceDateController.text.trim();
+                      final String serviceTime = serviceTimeController.text.trim();
+
+                      if (odometer.isNotEmpty &&
+                          location.isNotEmpty &&
+                          serviceDate.isNotEmpty &&
+                          serviceTime.isNotEmpty) {
+                        setState(() {
+                          odometerController.text = '';
+                          locationController.text = '';
+                          serviceDateController.text = '';
+                          serviceTimeController.text = '';
+
+                          serviceEntry.add(ServiceEntry(
+                              odometer: odometer, serviceDate: serviceDate,
+                              serviceTime: serviceTime, location: location)
+                          );
+                        });
+
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('Cancel'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -196,4 +288,3 @@ class ServiceCard extends StatelessWidget {
     );
   }
 }
-
