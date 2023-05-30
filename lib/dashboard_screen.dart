@@ -1,6 +1,7 @@
 import 'package:fleet_monitoring/notification.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
+import 'package:fleet_monitoring/vehicle/vehicle_service.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -27,22 +28,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           },
         ),
         DashboardCard(
-          title: 'Reports',
-          icon: Icons.report,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const VehicleReport()),
-            );
-          },
-        ),
-        DashboardCard(
           title: 'Services',
           icon: Icons.build,
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const VehicleReport()),
+              MaterialPageRoute(builder: (context) => VehicleService()),
             );
           },
         ),

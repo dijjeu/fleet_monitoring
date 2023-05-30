@@ -3,7 +3,7 @@ import 'package:fleet_monitoring/utils/stored_values.dart';
 import 'package:fleet_monitoring/vehicle.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_entry.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
-import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
+import 'package:fleet_monitoring/vehicle/vehicle_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -74,7 +74,6 @@ class _AddVehicleState extends State<AddVehicle> {
           orDateIssued,
         ]);
       }
-
       setState(() {
         _message = 'Vehicle successfully added!';
       });

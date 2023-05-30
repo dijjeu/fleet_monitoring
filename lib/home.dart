@@ -2,9 +2,11 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:fleet_monitoring/auth/auth.dart';
 import 'package:fleet_monitoring/dashboard_screen.dart';
 import 'package:fleet_monitoring/notification.dart';
+import 'package:fleet_monitoring/services/service_entry.dart';
 import 'package:fleet_monitoring/utils/stored_values.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
+import 'package:fleet_monitoring/vehicle/vehicle_service.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -21,10 +23,11 @@ class _HomeState extends State<Home> {
 
   final pages = [
     const AddVehicle(),
-    const VehicleReport(),
+    VehicleService(),
     const DashboardScreen(),
     const Notif(),
-    StoredValuesPage(),
+    const VehicleReport(serviceEntry: []),
+    //StoredValuesPage(),
   ];
 
   @override
@@ -35,7 +38,8 @@ class _HomeState extends State<Home> {
       const Icon(Icons.build_rounded), // services
       const Icon(Icons.home_rounded), //home
       const Icon(Icons.notifications), //notification
-      const Icon(Icons.person_rounded), // profile
+      const Icon(Icons.report), //vehicle report
+      //const Icon(Icons.person_rounded),
     ];
 
     return Scaffold(

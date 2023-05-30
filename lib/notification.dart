@@ -1,5 +1,6 @@
 import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
+import 'package:fleet_monitoring/vehicle/vehicle_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -44,7 +45,7 @@ class Notif extends StatelessWidget {
               leading: const Icon(Icons.report),
               title: const Text('Vehicle Reports',),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const VehicleReport()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => VehicleService()));
               },
             ),
             ListTile(
