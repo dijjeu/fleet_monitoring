@@ -15,8 +15,8 @@ class ServiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2.0,
-      margin: const EdgeInsets.all(8.0),
+      //elevation: 2.0,
+      //margin: const EdgeInsets.all(8.0),
       child: InkWell(
         onTap: onTap,
         child: Container(
@@ -26,7 +26,7 @@ class ServiceCard extends StatelessWidget {
             shrinkWrap: true,
             children: <Widget>[
               Image.asset(image, height: 50),
-              const SizedBox(height: 8.0),
+              const SizedBox(height: 5.0),
               Text(
                 title,
                 textAlign: TextAlign.center,

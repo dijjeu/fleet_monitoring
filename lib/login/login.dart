@@ -54,98 +54,115 @@ class _LoginState extends State<Login> {
       body: Form(
         key: _formKey,
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(50),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Login',
-                  style: GoogleFonts.poppins(
-                    fontSize: 35,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.pink[300],
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(50),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset('assets/trucks.png', height: 150),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Login',
+                    style: GoogleFonts.poppins(
+                      fontSize: 35,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.blue[800],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: phoneController,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone Number',
-                    prefixIcon: Icon(Icons.phone),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: phoneController,
+                    decoration: const InputDecoration(
+                      labelText: 'Phone Number',
+                      prefixIcon: Icon(Icons.phone),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your phone number';
+                      }
+                      return null;
+                    },
                   ),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your phone number';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: _obscureText,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.password_outlined,
-                        color: Colors.pink[300]),
-                    labelText: 'Password',
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                      child: Icon(
-                        _obscureText ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.pink[300],
+                  TextFormField(
+                    controller: passwordController,
+                    obscureText: _obscureText,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.password_outlined),
+                      labelText: 'Password',
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                        child: Icon(
+                          _obscureText ? Icons.visibility : Icons.visibility_off,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a valid password';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        if (Authentication.getLoggedInUser() != null) {
+                          _login();
+                        }
+                        //_login();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please complete all fields'),
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text('Login'),
+                    style: ButtonStyle(
+                      shadowColor: MaterialStateProperty.all<Color?>(Colors.black54),
+                      backgroundColor: MaterialStateProperty.all(Colors.red[800]),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20), // Adjust the value as needed
+                        ),
                       ),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a valid password';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      if (Authentication.getLoggedInUser() != null) {
-                        _login();
-                      }
-                      //_login();
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please complete all fields'),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('New User?'),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Register()),
+                          );
+                        },
+                        child: const Text(
+                          'Create an Account',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      );
-                    }
-                  },
-                  child: const Text('Login'),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('New User?'),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Register()),
-                        );
-                      },
-                      child: const Text('Create an Account'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Text(_message),
-              ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(_message),
+                ],
+              ),
             ),
           ),
         ),

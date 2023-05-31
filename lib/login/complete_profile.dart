@@ -72,12 +72,14 @@ class _CompleteProfileState extends State<CompleteProfile>{
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // -- header 'complete your profile' -- //
+                  Image.asset('assets/license.png', height: 150),
+                  const SizedBox(height: 20),
                   Text(
                     'Complete your profile',
                     style: GoogleFonts.poppins(
                       fontSize: 35,
                       fontWeight: FontWeight.w800,
-                      color: Colors.pink[300],
+                      color: Colors.blue[800],
                     ),
                     textAlign: TextAlign.center,
                   ),

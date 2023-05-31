@@ -13,7 +13,6 @@ class VehicleService extends StatefulWidget {
 }
 
 class _VehicleServiceState extends State<VehicleService> {
-
   TextEditingController odometerController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController serviceDateController = TextEditingController();
@@ -26,7 +25,7 @@ class _VehicleServiceState extends State<VehicleService> {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 50),
           Text(
@@ -34,7 +33,7 @@ class _VehicleServiceState extends State<VehicleService> {
             style: GoogleFonts.poppins(
               fontSize: 35,
               fontWeight: FontWeight.w800,
-              color: Colors.pink[300],
+              color: Colors.blue[800],
             ),
           ),
           Text(
@@ -42,7 +41,7 @@ class _VehicleServiceState extends State<VehicleService> {
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.normal,
-              color: Colors.pink[300],
+              color: Colors.black54,
             ),
           ),
           SizedBox(
@@ -55,7 +54,9 @@ class _VehicleServiceState extends State<VehicleService> {
                   image: 'assets/images/maintenance.png',
                   onTap: () {
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => serviceInput()));
+                      context,
+                      MaterialPageRoute(builder: (context) => serviceInput('Periodic Maintenance Schedule')),
+                    );
                   },
                 ),
                 ServiceCard(
@@ -63,7 +64,9 @@ class _VehicleServiceState extends State<VehicleService> {
                   image: 'assets/images/wiper.png',
                   onTap: () {
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => serviceInput()));
+                      context,
+                      MaterialPageRoute(builder: (context) => serviceInput('Wiper Blades Replacement')),
+                    );
                   },
                 ),
                 ServiceCard(
@@ -71,7 +74,9 @@ class _VehicleServiceState extends State<VehicleService> {
                   image: 'assets/images/car-battery.png',
                   onTap: () {
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => serviceInput()));
+                      context,
+                      MaterialPageRoute(builder: (context) => serviceInput('New Battery')),
+                    );
                   },
                 ),
                 ServiceCard(
@@ -79,7 +84,9 @@ class _VehicleServiceState extends State<VehicleService> {
                   image: 'assets/images/air-filter.png',
                   onTap: () {
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => serviceInput()));
+                      context,
+                      MaterialPageRoute(builder: (context) => serviceInput('Air Filter Replacement')),
+                    );
                   },
                 ),
                 ServiceCard(
@@ -87,7 +94,9 @@ class _VehicleServiceState extends State<VehicleService> {
                   image: 'assets/images/tires.png',
                   onTap: () {
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => serviceInput()));
+                      context,
+                      MaterialPageRoute(builder: (context) => serviceInput('Tire Replacement')),
+                    );
                   },
                 ),
                 ServiceCard(
@@ -95,35 +104,42 @@ class _VehicleServiceState extends State<VehicleService> {
                   image: 'assets/images/wheel.png',
                   onTap: () {
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => serviceInput()));
+                      context,
+                      MaterialPageRoute(builder: (context) => serviceInput('Tire Alignment/Balance')),
+                    );
                   },
                 ),
               ],
             ),
           ),
-          Container(
-            child: Column(
-              children: [
-                const SizedBox(height: 30),
-                Text(
-                  'Reports',
-                  textAlign: TextAlign.start,
-                  style: GoogleFonts.poppins(
-                    fontSize: 35,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.pink[300],
-                  ),
+          Column(
+            children: [
+              const SizedBox(height: 30),
+              Text(
+                'Reports',
+                textAlign: TextAlign.start,
+                style: GoogleFonts.poppins(
+                  fontSize: 35,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.blue[800],
                 ),
-                const SizedBox(height: 10),
-                serviceEntry.isEmpty
-                    ? const Text('No reports listed yet')
-                    : ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: serviceEntry.length,
-                    itemBuilder: (context, index) => getRow(index),
-                  ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+              serviceEntry.isEmpty
+                  ? Text(
+                'No reports listed yet',
+                style: GoogleFonts.poppins(
+                  color: Colors.black54,
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                ),
+              )
+                  : ListView.builder(
+                shrinkWrap: true,
+                itemCount: serviceEntry.length,
+                itemBuilder: (context, index) => getRow(index),
+              ),
+            ],
           ),
         ],
       ),
@@ -131,16 +147,17 @@ class _VehicleServiceState extends State<VehicleService> {
   }
 
   Widget getRow(int index) {
+    final ServiceEntry entry = serviceEntry[index];
     return Card(
       child: ListTile(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              serviceEntry[index].serviceDate,
+              '${entry.serviceType}: ${entry.serviceDate}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(serviceEntry[index].serviceTime),
+            Text(entry.serviceTime),
           ],
         ),
       ),
@@ -148,7 +165,7 @@ class _VehicleServiceState extends State<VehicleService> {
   }
 
 
-  Widget serviceInput() {
+  Widget serviceInput(String serviceType) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(30),
@@ -171,8 +188,7 @@ class _VehicleServiceState extends State<VehicleService> {
               ),
               TextField(
                 controller: odometerController,
-                decoration:
-                const InputDecoration(labelText: 'Odometer before service'),
+                decoration: const InputDecoration(labelText: 'Odometer before service'),
               ),
               TextFormField(
                 controller: serviceDateController,
@@ -186,11 +202,10 @@ class _VehicleServiceState extends State<VehicleService> {
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime(2000),
-                      lastDate: DateTime(2101)
-                  );
+                      lastDate: DateTime(2101));
                   if (pickedDate != null) {
                     print(pickedDate);
-                    String formattedDate = DateFormat('MM - dd - yyyy').format(pickedDate);
+                    String formattedDate = DateFormat('MM/dd/yyyy').format(pickedDate);
                     print(formattedDate);
                     setState(() {
                       serviceDateController.text = formattedDate;
@@ -264,9 +279,12 @@ class _VehicleServiceState extends State<VehicleService> {
                           serviceTimeController.text = '';
 
                           serviceEntry.add(ServiceEntry(
-                              odometer: odometer, serviceDate: serviceDate,
-                              serviceTime: serviceTime, location: location)
-                          );
+                            serviceType: serviceType,
+                            odometer: odometer,
+                            serviceDate: serviceDate,
+                            serviceTime: serviceTime,
+                            location: location,
+                          ));
                         });
 
                         Navigator.pop(context);

@@ -50,133 +50,148 @@ class _RegisterState extends State<Register>{
       body: Form(
         key: _formKey,
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(50),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Create an Account',
-                  style: GoogleFonts.poppins(
-                    fontSize: 35,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.pink[300],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-
-                /// -- phone number input
-                TextFormField(
-                  controller: phoneController,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone Number',
-                    prefixIcon: Icon(Icons.phone),
-                  ),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your phone number';
-                    }
-                    return null;
-                  },
-                ),
-
-                /// -- password input
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: _obscureText,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.password_outlined,
-                        color: Colors.pink[300]),
-                    labelText: 'Password',
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                      child: Icon(
-                        _obscureText ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.pink[300],
-                      ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(50),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset('assets/trucks.png', height: 150),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Create an Account',
+                    style: GoogleFonts.poppins(
+                      fontSize: 35,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.blue[800],
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a valid password';
-                    }
-                    return null;
-                  },
-                ),
+                  const SizedBox(height: 20),
 
-                /// -- confirm password input
-                TextFormField(
-                  controller: confirmPasswordController,
-                  obscureText: _obscureText,
-                  decoration: InputDecoration(
-                    prefixIcon:
-                    Icon(Icons.password_outlined, color: Colors.pink[300]),
-                    labelText: 'Confirm Password',
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                      child: Icon(
-                        _obscureText ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.pink[300],
-                      ),
+                  /// -- phone number input
+                  TextFormField(
+                    controller: phoneController,
+                    decoration: const InputDecoration(
+                      labelText: 'Phone Number',
+                      prefixIcon: Icon(Icons.phone),
                     ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the confirmation password';
-                    } else if (value != passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 20),
-
-                /// -- login button
-                ElevatedButton(
-                    onPressed: () {
-                      _register();
-                      if(_formKey.currentState!.validate()) {
-                        // Navigate the user to the home page
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CompleteProfile()));
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Please complete all fields'),
-                          ),
-                        );
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your phone number';
                       }
+                      return null;
                     },
-                    child: const Text('Sign Up')
-                ),
-                const SizedBox(height: 10),
+                  ),
 
-                /// -- create an account
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Already have an account?'),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => Login()),
-                          );
+                  /// -- password input
+                  TextFormField(
+                    controller: passwordController,
+                    obscureText: _obscureText,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.password_outlined),
+                      labelText: 'Password',
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
                         },
-                        child: const Text('Login')
+                        child: Icon(
+                          _obscureText ? Icons.visibility : Icons.visibility_off,
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              ],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a valid password';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  /// -- confirm password input
+                  TextFormField(
+                    controller: confirmPasswordController,
+                    obscureText: _obscureText,
+                    decoration: InputDecoration(
+                      prefixIcon:
+                      const Icon(Icons.password_outlined),
+                      labelText: 'Confirm Password',
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                        child: Icon(
+                          _obscureText ? Icons.visibility : Icons.visibility_off,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the confirmation password';
+                      } else if (value != passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// -- login button
+                  ElevatedButton(
+                      onPressed: () {
+                        _register();
+                        if(_formKey.currentState!.validate()) {
+                          // Navigate the user to the home page
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => CompleteProfile()));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please complete all fields'),
+                            ),
+                          );
+                        }
+                      },
+                    style: ButtonStyle(
+                      shadowColor: MaterialStateProperty.all<Color?>(Colors.black54),
+                      backgroundColor: MaterialStateProperty.all(Colors.red[800]),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20), // Adjust the value as needed
+                        ),
+                      ),
+                    ),
+                    child: const Text('Sign Up'),
+                  ),
+                  const SizedBox(height: 10),
+
+                  /// -- create an account
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Already have an account?'),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => Login()),
+                            );
+                          },
+                          child: const Text('Login',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

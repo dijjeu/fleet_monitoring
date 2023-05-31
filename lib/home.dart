@@ -5,7 +5,6 @@ import 'package:fleet_monitoring/notification.dart';
 import 'package:fleet_monitoring/services/service_entry.dart';
 import 'package:fleet_monitoring/utils/stored_values.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
-import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_service.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +25,7 @@ class _HomeState extends State<Home> {
     VehicleService(),
     const DashboardScreen(),
     const Notif(),
-    const VehicleReport(serviceEntry: []),
+    //const VehicleReport(serviceEntry: []),
     //StoredValuesPage(),
   ];
 
@@ -38,7 +37,7 @@ class _HomeState extends State<Home> {
       const Icon(Icons.build_rounded), // services
       const Icon(Icons.home_rounded), //home
       const Icon(Icons.notifications), //notification
-      const Icon(Icons.report), //vehicle report
+      //const Icon(Icons.report), //vehicle report
       //const Icon(Icons.person_rounded),
     ];
 
