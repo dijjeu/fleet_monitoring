@@ -54,13 +54,25 @@ class _AddVehicleState extends State<AddVehicle> {
         regisDate.isNotEmpty &&
         orNum.isNotEmpty &&
         orDateIssued.isNotEmpty) {
-      String vehicleKey = plateNum + regisNum;
+
+      await prefs.setString('carMake', carMakeController.text);
+      await prefs.setString('color', colorController.text);
+      await prefs.setString('yearModel', yearModelController.text);
+      await prefs.setString('plateNum', plateNumController.text);
+      await prefs.setString('regisNum', regisNumController.text);
+      await prefs.setString('regisDate', regisDateController.text);
+      await prefs.setString('orNum', orNumController.text);
+      await prefs.setString('orDateIssued', orDateIssuedController.text);
 
       SharedPreferences userPrefs = await SharedPreferences.getInstance();
       String? loggedInUser = userPrefs.getString('loggedInUser');
 
       if (loggedInUser != null) {
         List<String> existingVehicles = userPrefs.getStringList(loggedInUser) ?? [];
+
+        // Generate a unique key for the current vehicle
+        String vehicleKey = DateTime.now().millisecondsSinceEpoch.toString();
+
         existingVehicles.add(vehicleKey);
         await userPrefs.setStringList(loggedInUser, existingVehicles);
         await userPrefs.setStringList(vehicleKey, [
@@ -83,7 +95,6 @@ class _AddVehicleState extends State<AddVehicle> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

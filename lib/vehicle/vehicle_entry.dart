@@ -2,8 +2,9 @@ import 'package:fleet_monitoring/vehicle.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class VehicleEntry extends StatelessWidget {
+class VehicleEntry extends StatefulWidget {
   final VehicleDetails vehicle;
 
   const VehicleEntry({
@@ -11,6 +12,11 @@ class VehicleEntry extends StatelessWidget {
     required this.vehicle,
   }) : super(key: key);
 
+  @override
+  State<VehicleEntry> createState() => _VehicleEntryState();
+}
+
+class _VehicleEntryState extends State<VehicleEntry> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,28 +52,28 @@ class VehicleEntry extends StatelessWidget {
             ),
             //const SizedBox(height: 10),
             Text(
-              'Car Make: ${vehicle.carMake}',
+              'Car Make: ${widget.vehicle.carMake}',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
               ),
             ),
             Text(
-              'Year Model: ${vehicle.yearModel}',
+              'Year Model: ${widget.vehicle.yearModel}',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
               ),
             ),
             Text(
-              'Color: ${vehicle.color}',
+              'Color: ${widget.vehicle.color}',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
               ),
             ),
             Text(
-              'Plate Number: ${vehicle.plateNum}',
+              'Plate Number: ${widget.vehicle.plateNum}',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
@@ -88,14 +94,14 @@ class VehicleEntry extends StatelessWidget {
             ),
             //const SizedBox(height: 10),
             Text(
-              'Registration Number: ${vehicle.regisNum}',
+              'Registration Number: ${widget.vehicle.regisNum}',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
               ),
             ),
             Text(
-              'Registration Date: ${vehicle.regisDate}',
+              'Registration Date: ${widget.vehicle.regisDate}',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
@@ -103,14 +109,14 @@ class VehicleEntry extends StatelessWidget {
               ),
             ),
             Text(
-              'OR Number: ${vehicle.orNum}',
+              'OR Number: ${widget.vehicle.orNum}',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
               ),
             ),
             Text(
-              'OR Date Issued: ${vehicle.orDateIssued}',
+              'OR Date Issued: ${widget.vehicle.orDateIssued}',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
