@@ -129,7 +129,7 @@ class _LoginState extends State<Login> {
                     child: const Text('Login'),
                     style: ButtonStyle(
                       shadowColor: MaterialStateProperty.all<Color?>(Colors.black54),
-                      backgroundColor: MaterialStateProperty.all(Colors.red[800]),
+                      backgroundColor: MaterialStateProperty.all(Colors.red[400]),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20), // Adjust the value as needed

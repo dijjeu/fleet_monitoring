@@ -95,21 +95,25 @@ class _AddVehicleState extends State<AddVehicle> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 10),
+              const SizedBox(height: 50),
               Text(
                 'Vehicles',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: 35,
                   fontWeight: FontWeight.w800,
-                  color: Colors.pink[300],
+                  color: Colors.blue[800],
                 ),
               ),
-              const SizedBox(height: 10),
+              //const SizedBox(height: 10),
               vehicleDetails.isEmpty
-                  ? const Text(
+                  ? Text(
                       'No vehicles listed yet..',
-                      style: TextStyle(fontSize: 22),
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black54,
+                      ),
                     )
                   : Expanded(
                       child: ListView.builder(
@@ -126,6 +130,7 @@ class _AddVehicleState extends State<AddVehicle> {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => vehicleInput()));
         },
+        backgroundColor: Colors.red[400],
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
@@ -133,23 +138,30 @@ class _AddVehicleState extends State<AddVehicle> {
   }
 
   Widget getRow(int index) {
-    return Card(
-      child: ListTile(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              vehicleDetails[index].plateNum,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(vehicleDetails[index].carMake),
-          ],
-        ),
-        trailing: SizedBox(
-          width: 40,
-          child: Row(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => VehicleEntry(vehicle: vehicleDetails[index])),
+        );
+      },
+      child: Card(
+        child: ListTile(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /*InkWell(
+              Text(
+                vehicleDetails[index].plateNum,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(vehicleDetails[index].carMake),
+            ],
+          ),
+          trailing: SizedBox(
+            width: 40,
+            child: Row(
+              children: [
+                /*InkWell(
                 onTap: () {
                   carMakeController.text = vehicleDetails[index].carMake;
                   yearModelController.text = vehicleDetails[index].yearModel;
@@ -167,20 +179,22 @@ class _AddVehicleState extends State<AddVehicle> {
                 },
                 child: const Icon(Icons.edit),
               ),*/
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    vehicleDetails.removeAt(index);
-                  });
-                },
-                child: const Icon(Icons.delete),
-              ),
-            ],
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      vehicleDetails.removeAt(index);
+                    });
+                  },
+                  child: const Icon(Icons.delete),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
 
   Widget vehicleInput() {
     return Scaffold(
@@ -200,8 +214,8 @@ class _AddVehicleState extends State<AddVehicle> {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: 25,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.pink[300],
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue[800],
                 ),
               ),
               TextField(
@@ -228,8 +242,8 @@ class _AddVehicleState extends State<AddVehicle> {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: 25,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.pink[300],
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue[800],
                 ),
               ),
               TextField(
@@ -253,7 +267,7 @@ class _AddVehicleState extends State<AddVehicle> {
                   );
                   if (pickedDate != null) {
                     print(pickedDate);
-                    String formattedDate = DateFormat('MM - dd - yyyy').format(pickedDate);
+                    String formattedDate = DateFormat('MM-dd-yyyy').format(pickedDate);
                     print(formattedDate);
                     setState(() {
                       regisDateController.text = formattedDate;
@@ -289,7 +303,7 @@ class _AddVehicleState extends State<AddVehicle> {
                   );
                   if (pickedDate != null) {
                     print(pickedDate);
-                    String formattedDate = DateFormat('MM - dd - yyyy').format(pickedDate);
+                    String formattedDate = DateFormat('MM-dd-yyyy').format(pickedDate);
                     print(formattedDate);
                     setState(() {
                       orDateIssuedController.text = formattedDate;
@@ -306,12 +320,19 @@ class _AddVehicleState extends State<AddVehicle> {
                 },
               ),
 
+              const SizedBox(height: 10),
+
               /// -- text buttons -- ///
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                    child: const Text('Done'),
+                    child: Text(
+                      'Done',
+                      style: TextStyle(
+                        color: Colors.red[400],
+                      ),
+                    ),
                     onPressed: () {
                       String carMake = carMakeController.text.trim();
                       String yearModel = yearModelController.text.trim();

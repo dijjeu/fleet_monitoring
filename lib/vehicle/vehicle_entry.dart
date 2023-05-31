@@ -28,7 +28,7 @@ class VehicleEntry extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 35,
                   fontWeight: FontWeight.w800,
-                  color: Colors.pink[300],
+                  color: Colors.blue[800],
                 ),
               ),
             ),
@@ -41,7 +41,7 @@ class VehicleEntry extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 25,
                 fontWeight: FontWeight.w600,
-                color: Colors.pink[300],
+                color: Colors.red[400],
               ),
             ),
             //const SizedBox(height: 10),
@@ -83,7 +83,7 @@ class VehicleEntry extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 25,
                 fontWeight: FontWeight.w600,
-                color: Colors.pink[300],
+                color: Colors.red[400],
               ),
             ),
             //const SizedBox(height: 10),

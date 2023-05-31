@@ -172,20 +172,31 @@ class _VehicleServiceState extends State<VehicleService> {
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            //crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              const SizedBox(height: 50),
-              /// -- registration details -- ///
+              const SizedBox(height: 60),
               Text(
-                'Registration Details',
+                serviceType,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: 25,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.pink[300],
+                  fontWeight: FontWeight.w800,
+                  color: Colors.blue[800],
                 ),
               ),
+              const SizedBox(height: 5),
+              Text(
+                'Please fill up the form below completely and accurately.',
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              /// -- registration details -- ///
               TextField(
                 controller: odometerController,
                 decoration: const InputDecoration(labelText: 'Odometer before service'),
@@ -255,13 +266,19 @@ class _VehicleServiceState extends State<VehicleService> {
                 controller: locationController,
                 decoration: const InputDecoration(labelText: 'Location of service'),
               ),
+              const SizedBox(height: 20),
 
               /// -- text buttons -- ///
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                    child: const Text('Done'),
+                    child: Text(
+                      'Done',
+                      style: TextStyle(
+                        color: Colors.red[400],
+                      ),
+                    ),
                     onPressed: () {
                       final String odometer = odometerController.text.trim();
                       final String location = locationController.text.trim();

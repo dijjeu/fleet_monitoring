@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
     const DashboardScreen(),
     const Notif(),
     //const VehicleReport(serviceEntry: []),
-    //StoredValuesPage(),
+    StoredValuesPage(),
   ];
 
   @override
@@ -38,7 +38,7 @@ class _HomeState extends State<Home> {
       const Icon(Icons.home_rounded), //home
       const Icon(Icons.notifications), //notification
       //const Icon(Icons.report), //vehicle report
-      //const Icon(Icons.person_rounded),
+      const Icon(Icons.person_rounded),
     ];
 
     return Scaffold(

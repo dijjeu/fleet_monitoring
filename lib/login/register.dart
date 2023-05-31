@@ -160,7 +160,7 @@ class _RegisterState extends State<Register>{
                       },
                     style: ButtonStyle(
                       shadowColor: MaterialStateProperty.all<Color?>(Colors.black54),
-                      backgroundColor: MaterialStateProperty.all(Colors.red[800]),
+                      backgroundColor: MaterialStateProperty.all(Colors.red[400]),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20), // Adjust the value as needed
