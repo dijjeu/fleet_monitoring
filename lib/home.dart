@@ -24,9 +24,11 @@ class _HomeState extends State<Home> {
     const AddVehicle(),
     VehicleService(),
     const DashboardScreen(),
-    NotificationPage(),
+    NotificationScreen(payload),
     VehicleReport(),
   ];
+
+  static String? get payload => null;
 
   @override
   Widget build(BuildContext context) {

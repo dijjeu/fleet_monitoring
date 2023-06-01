@@ -2,6 +2,7 @@ import 'package:fleet_monitoring/notification.dart';
 import 'package:fleet_monitoring/vehicle_input.dart';
 import 'package:fleet_monitoring/vehicle_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -11,6 +12,46 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  @override
+  void initState() {
+    super.initState();
+    var initializationSettingsAndroid =
+    const AndroidInitializationSettings('ic_launcher');
+    var initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  void onDidReceiveNotificationResponse(
+      String? payload, BuildContext context) async {
+    if (payload != null) {
+      debugPrint('notification payload: $payload');
+      await Navigator.push(
+        context,
+        MaterialPageRoute<void>(builder: (context) => NotificationScreen(payload)),
+      );
+    }
+  }
+
+  Future<void> _showNotification(String title, String message) async {
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails('your channel id', 'your channel name',
+        channelDescription: 'your channel description',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+    NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNotificationsPlugin.show(
+        0, title, message, notificationDetails,
+        payload: 'item x');
+  }
+
   @override
   Widget build(BuildContext context) {
     return GridView.count(
@@ -40,10 +81,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           title: 'Notifications',
           icon: Icons.notifications,
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NotificationPage()),
-            );
+            final payload = 'This is a sample payload';
+            _showNotification('Hello', 'This is a sample notification');
+            onDidReceiveNotificationResponse(payload, context);
           },
         ),
       ],

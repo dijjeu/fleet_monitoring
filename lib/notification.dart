@@ -1,74 +1,64 @@
-import 'package:fleet_monitoring/notification_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+class NotificationScreen extends StatefulWidget {
+  final String? payload;
 
-class NotificationPage extends StatefulWidget {
+  NotificationScreen(this.payload);
+
   @override
-  _NotificationPageState createState() => _NotificationPageState();
+  _NotificationScreenState createState() => _NotificationScreenState();
 }
 
-class _NotificationPageState extends State<NotificationPage> {
-
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-
+class _NotificationScreenState extends State<NotificationScreen> {
+  List<String> notifications = [];
 
   @override
   void initState() {
     super.initState();
-    var initializationSettingsAndroid =
-    const AndroidInitializationSettings('ic_launcher');
-    var initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-    );
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
-
-  void onDidReceiveNotificationResponse(NotificationResponse notificationResponse) async {
-    final String? payload = notificationResponse.payload;
-    if (notificationResponse.payload != null) {
-      debugPrint('notification payload: $payload');
+    if (widget.payload != null) {
+      addNotification(widget.payload!);
     }
-    await Navigator.push(
-      context,
-      MaterialPageRoute<void>(builder: (context) => NotificationScreen(payload)),
-    );
   }
 
-
-
-  Future<void> _showNotification(String title, String message) async {
-    const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails('your channel id', 'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
-    const NotificationDetails notificationDetails =
-    NotificationDetails(android: androidNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(
-        0, title, message, notificationDetails,
-        payload: 'item x');
+  void addNotification(String notification) {
+    setState(() {
+      notifications.add(notification);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notification Page'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              child: const Text('Show Notification'),
-              onPressed: () {
-                _showNotification('Hello', 'This is a sample notification');
-              },
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Notifications',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 35,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.blue[800],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: notifications.length,
+                  itemBuilder: (context, index) => Card(
+                    child: ListTile(
+                      leading: Icon(Icons.notifications),
+                      title: Text(notifications[index]),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
