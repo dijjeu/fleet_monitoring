@@ -1,6 +1,6 @@
 import 'package:fleet_monitoring/notification.dart';
-import 'package:fleet_monitoring/vehicle/vehicle_input.dart';
-import 'package:fleet_monitoring/vehicle/vehicle_service.dart';
+import 'package:fleet_monitoring/vehicle_input.dart';
+import 'package:fleet_monitoring/vehicle_service.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatefulWidget {

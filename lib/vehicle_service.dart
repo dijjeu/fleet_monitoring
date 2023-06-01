@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import '../services/service_card.dart';
-import '../services/service_entry.dart';
+import 'services/service_card.dart';
+import 'services/service_entry.dart';
 
 class VehicleService extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class _VehicleServiceState extends State<VehicleService> {
   TextEditingController serviceDateController = TextEditingController();
   TextEditingController serviceTimeController = TextEditingController();
 
-  List<ServiceEntry> serviceEntry = List.empty(growable: true);
+  List<ServiceEntry> serviceEntry = [];
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _VehicleServiceState extends State<VehicleService> {
             ),
           ),
           SizedBox(
-            height: 300,
+            height: 600,
             child: GridView.count(
               crossAxisCount: 3,
               children: <Widget>[
@@ -109,37 +109,38 @@ class _VehicleServiceState extends State<VehicleService> {
                     );
                   },
                 ),
+                ServiceCard(
+                  title: 'Appointments',
+                  image: 'assets/images/appointment.png',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => serviceInput('Appointments')),
+                    );
+                  },
+                ),
+                ServiceCard(
+                  title: 'Repairs',
+                  image: 'assets/images/repair.png',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => serviceInput('Repairs')),
+                    );
+                  },
+                ),
+                ServiceCard(
+                  title: 'Others',
+                  image: 'assets/images/more.png',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => serviceInput('Others')),
+                    );
+                  },
+                ),
               ],
             ),
-          ),
-          Column(
-            children: [
-              const SizedBox(height: 30),
-              Text(
-                'Reports',
-                textAlign: TextAlign.start,
-                style: GoogleFonts.poppins(
-                  fontSize: 35,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.blue[800],
-                ),
-              ),
-              const SizedBox(height: 10),
-              serviceEntry.isEmpty
-                  ? Text(
-                'No reports listed yet',
-                style: GoogleFonts.poppins(
-                  color: Colors.black54,
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                ),
-              )
-                  : ListView.builder(
-                shrinkWrap: true,
-                itemCount: serviceEntry.length,
-                itemBuilder: (context, index) => getRow(index),
-              ),
-            ],
           ),
         ],
       ),
