@@ -42,7 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const Notif()),
+              MaterialPageRoute(builder: (context) => NotificationPage()),
             );
           },
         ),

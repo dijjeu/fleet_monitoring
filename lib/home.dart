@@ -24,7 +24,7 @@ class _HomeState extends State<Home> {
     const AddVehicle(),
     VehicleService(),
     const DashboardScreen(),
-    const Notif(),
+    NotificationPage(),
     VehicleReport(),
   ];
 
