@@ -1,5 +1,6 @@
 import 'package:fleet_monitoring/services/battery_replace.dart';
 import 'package:fleet_monitoring/services/wiper_replace.dart';
+import 'package:fleet_monitoring/vehicle_report.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -29,7 +30,7 @@ class _VehicleServiceState extends State<VehicleService> {
         children: [
           const SizedBox(height: 50),
           Text(
-            'Services',
+            'Vehicle Services',
             style: GoogleFonts.poppins(
               fontSize: 35,
               fontWeight: FontWeight.w800,
@@ -37,7 +38,7 @@ class _VehicleServiceState extends State<VehicleService> {
             ),
           ),
           Text(
-            'Please select a service you had undergone.',
+            'Choose a service you had undergone.',
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.normal,
@@ -139,6 +140,35 @@ class _VehicleServiceState extends State<VehicleService> {
                     );
                   },
                 ),
+                Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    Text(
+                      'Reports',
+                      textAlign: TextAlign.start,
+                      style: GoogleFonts.poppins(
+                        fontSize: 35,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.blue[800],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    serviceEntry.isEmpty
+                        ? Text(
+                      'No reports listed yet',
+                      style: GoogleFonts.poppins(
+                        color: Colors.black54,
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    )
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: serviceEntry.length,
+                      itemBuilder: (context, index) => getRow(index),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -197,10 +227,10 @@ class _VehicleServiceState extends State<VehicleService> {
               ),
               const SizedBox(height: 20),
 
-              /// -- registration details -- ///
+              /// -- service details -- ///
               TextField(
                 controller: odometerController,
-                decoration: const InputDecoration(labelText: 'Odometer before service'),
+                decoration: const InputDecoration(labelText: 'Mileage before service'),
               ),
               TextFormField(
                 controller: serviceDateController,
@@ -305,7 +335,12 @@ class _VehicleServiceState extends State<VehicleService> {
                           ));
                         });
 
-                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VehicleReports(serviceEntries: serviceEntry),
+                          ),
+                        );
                       }
                     },
                   ),

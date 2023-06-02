@@ -9,14 +9,13 @@ import 'package:fleet_monitoring/vehicle_service.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
   int _currentIndex = 2;
 
@@ -25,14 +24,13 @@ class _HomeState extends State<Home> {
     VehicleService(),
     const DashboardScreen(),
     NotificationScreen(payload),
-    VehicleReport(),
+    VehicleReports(serviceEntries: []),
   ];
 
   static String? get payload => null;
 
   @override
   Widget build(BuildContext context) {
-
     final items = <Widget>[
       const Icon(Icons.directions_car_rounded), //vehicle
       const Icon(Icons.build_rounded), // services
@@ -43,7 +41,10 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       extendBody: false,
-      body: pages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: pages,
+      ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
           iconTheme: const IconThemeData(color: Colors.white),
