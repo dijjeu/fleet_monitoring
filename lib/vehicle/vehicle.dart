@@ -7,6 +7,7 @@ class VehicleDetails {
   String regisNum;
   String orNum;
   String regisDate;
+  String regisExp;
   String orDateIssued;
 
   VehicleDetails({
@@ -18,7 +19,9 @@ class VehicleDetails {
     required this.regisNum,
     required this.orNum,
     required this.regisDate,
+    required this.regisExp,
     required this.orDateIssued,
+
   });
 }
 

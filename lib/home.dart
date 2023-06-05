@@ -3,7 +3,6 @@ import 'package:fleet_monitoring/auth/auth.dart';
 import 'package:fleet_monitoring/dashboard_screen.dart';
 import 'package:fleet_monitoring/notification.dart';
 import 'package:fleet_monitoring/services/service_entry.dart';
-import 'package:fleet_monitoring/vehicle_input.dart';
 import 'package:fleet_monitoring/vehicle_report.dart';
 import 'package:fleet_monitoring/vehicle_service.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +16,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
-  int _currentIndex = 2;
+  int _currentIndex = 0;
 
   final pages = [
-    const AddVehicle(),
     VehicleService(),
-    const DashboardScreen(),
+    DashboardScreen(),
     NotificationScreen(payload),
     VehicleReports(serviceEntries: []),
   ];
@@ -32,7 +30,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
-      const Icon(Icons.directions_car_rounded), //vehicle
       const Icon(Icons.build_rounded), // services
       const Icon(Icons.home_rounded), //home
       const Icon(Icons.notifications), //notification
