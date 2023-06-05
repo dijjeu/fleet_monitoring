@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import 'services/service_card.dart';
-import 'services/service_entry.dart';
+import 'repositories/service_entry.dart';
 
 class VehicleService extends StatefulWidget {
   @override

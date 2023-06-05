@@ -1,5 +1,6 @@
+import 'package:fleet_monitoring/login/login.dart';
 import 'package:fleet_monitoring/notification.dart';
-import 'package:fleet_monitoring/vehicle/vehicle.dart';
+import 'package:fleet_monitoring/repositories/vehicle.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_entry.dart';
 import 'package:fleet_monitoring/vehicle_service.dart';
 import 'package:flutter/material.dart';
@@ -155,14 +156,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 20),
-              Text(
-                'Home',
-                style: GoogleFonts.montserrat(
-                  fontSize: 35,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.black87,
-                ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    'Home',
+                    style: GoogleFonts.montserrat(
+                      fontSize: 35,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(width: 170),
+                  GestureDetector(
+                    child: Icon(Icons.logout_rounded),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+                    },
+                  ),
+                ],
               ),
               const SizedBox(height: 10),
               searchBar(),

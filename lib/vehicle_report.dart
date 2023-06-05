@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'services/service_entry.dart';
+import 'repositories/service_entry.dart';
 
 class VehicleReports extends StatelessWidget {
   final List<ServiceEntry> serviceEntries;
