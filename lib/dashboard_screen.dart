@@ -115,6 +115,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       Navigator.pop(context);
 
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Vehicle Successfully Added!'),
+        ),
+      );
+
+
+      DateTime expiryDate = DateFormat('yyyy-MM-dd').parse(regisExp);
+      DateTime now = DateTime.now();
+      Duration difference = expiryDate.difference(now);
+      if (difference <= Duration(days: 30)) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Vehicle Registration Renewal'),
+              content: Text('You need to renew your vehicle registration.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
       _pageController.animateToPage(vehicleDetails.length - 1, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
     }
   }
@@ -176,12 +205,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
                     },
                   ),
+
                 ],
               ),
               const SizedBox(height: 10),
               searchBar(),
+              const SizedBox(height: 15),
+              Text(
+                'Your Fleet',
+                textAlign: TextAlign.start,
+                style: GoogleFonts.montserrat(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black87,
+                ),
+              ),
               SizedBox(
-                height: 300,
+                height: 280,
                 child: PageView.builder(
                   controller: _pageController,
                   onPageChanged: (index) {
@@ -228,10 +268,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   );
                 }),
               ),
-              const SizedBox(height: 10),
+              if(vehicleDetails.isEmpty)
+                Text(
+                    'No vehicles added yet...'
+                ),
               if (vehicleDetails.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -271,6 +314,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
+                          /// -- information
                           TextButton(
                             onPressed: () {
                               Navigator.push(
@@ -286,17 +330,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ],
                             ),
                           ),
+                          /// -- delete vehicle
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              if (selectedIndex == pageNum) {
+                                setState(() {
+                                  vehicleDetails.removeAt(selectedIndex);
+                                  selectedIndex = -1;
+                                });
+                              }
+                            },
                             child: Row(
                               children: [
-                                Icon(Icons.edit_note_outlined, color: Colors.black87),
+                                Icon(Icons.delete_outline_rounded, color: Colors.black87),
                                 SizedBox(width: 8),
-                                Text('Edit'),
+                                Text('Delete Vehicle'),
                               ],
                             ),
-                          )
-
+                          ),
                         ],
                       ),
                     ],
@@ -316,7 +367,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Add a new vehicle'),
+                    Text('Add vehicle'),
                     const SizedBox(width: 50),
                     Icon(
                       Icons.add,
@@ -712,8 +763,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: Padding(
         padding: EdgeInsets.all(20),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           children: [
             const SizedBox(height: 50),
             Text(
@@ -724,7 +774,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 color: Colors.black87,
               ),
             ),
-            Expanded(
+            vehicleDetails.isEmpty
+                ? Text('No vehicles listed yet...')
+                : Expanded(
               child: ListView.builder(
                 itemCount: allVehicles.length,
                 itemBuilder: (context, index) {
@@ -739,15 +791,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Back')
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Back'),
             ),
           ],
         ),
       ),
     );
   }
-
 }
