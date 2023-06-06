@@ -13,7 +13,9 @@ class VehicleService extends StatefulWidget {
   State<VehicleService> createState() => _VehicleServiceState();
 }
 
-class _VehicleServiceState extends State<VehicleService> {
+class _VehicleServiceState extends State<VehicleService>
+    with SingleTickerProviderStateMixin {
+  TabController? _tabController;
   TextEditingController odometerController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController serviceDateController = TextEditingController();
@@ -22,7 +24,57 @@ class _VehicleServiceState extends State<VehicleService> {
   List<ServiceEntry> serviceEntry = [];
 
   @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        body: Column(
+          children: [
+            TabBar(
+              padding: EdgeInsets.only(top: 40),
+              indicatorColor: Colors.red[400],
+              indicatorWeight: 3,
+
+              tabs: [
+                Tab(
+                  child: Text(
+                      'Services',
+                    style: TextStyle(
+                      color: Colors.black87
+                    ),
+                  ),
+                ),
+                Tab(text: 'Reports'),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  buildServicesTab(),
+                  buildReportsTab(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Widget buildServicesTab() {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -56,7 +108,10 @@ class _VehicleServiceState extends State<VehicleService> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => serviceInput('Periodic Maintenance Schedule')),
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            serviceInput('Periodic Maintenance Schedule'),
+                      ),
                     );
                   },
                 ),
@@ -66,7 +121,10 @@ class _VehicleServiceState extends State<VehicleService> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => serviceInput('Wiper Blades Replacement')),
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            serviceInput('Wiper Blades Replacement'),
+                      ),
                     );
                   },
                 ),
@@ -76,7 +134,9 @@ class _VehicleServiceState extends State<VehicleService> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => serviceInput('New Battery')),
+                      MaterialPageRoute(
+                        builder: (context) => serviceInput('New Battery'),
+                      ),
                     );
                   },
                 ),
@@ -86,7 +146,10 @@ class _VehicleServiceState extends State<VehicleService> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => serviceInput('Air Filter Replacement')),
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            serviceInput('Air Filter Replacement'),
+                      ),
                     );
                   },
                 ),
@@ -96,7 +159,9 @@ class _VehicleServiceState extends State<VehicleService> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => serviceInput('Tire Replacement')),
+                      MaterialPageRoute(
+                        builder: (context) => serviceInput('Tire Replacement'),
+                      ),
                     );
                   },
                 ),
@@ -106,7 +171,10 @@ class _VehicleServiceState extends State<VehicleService> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => serviceInput('Tire Alignment/Balance')),
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            serviceInput('Tire Alignment/Balance'),
+                      ),
                     );
                   },
                 ),
@@ -116,7 +184,9 @@ class _VehicleServiceState extends State<VehicleService> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => serviceInput('Appointments')),
+                      MaterialPageRoute(
+                        builder: (context) => serviceInput('Appointments'),
+                      ),
                     );
                   },
                 ),
@@ -126,7 +196,9 @@ class _VehicleServiceState extends State<VehicleService> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => serviceInput('Repairs')),
+                      MaterialPageRoute(
+                        builder: (context) => serviceInput('Repairs'),
+                      ),
                     );
                   },
                 ),
@@ -136,41 +208,48 @@ class _VehicleServiceState extends State<VehicleService> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => serviceInput('Others')),
+                      MaterialPageRoute(
+                        builder: (context) => serviceInput('Others'),
+                      ),
                     );
                   },
                 ),
-                Column(
-                  children: [
-                    const SizedBox(height: 30),
-                    Text(
-                      'Reports',
-                      textAlign: TextAlign.start,
-                      style: GoogleFonts.poppins(
-                        fontSize: 35,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.blue[800],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    serviceEntry.isEmpty
-                        ? Text(
-                      'No reports listed yet',
-                      style: GoogleFonts.poppins(
-                        color: Colors.black54,
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    )
-                        : ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: serviceEntry.length,
-                      itemBuilder: (context, index) => getRow(index),
-                    ),
-                  ],
-                ),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildReportsTab() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 30),
+          Text(
+            'Reports',
+            textAlign: TextAlign.start,
+            style: GoogleFonts.poppins(
+              fontSize: 35,
+              fontWeight: FontWeight.w800,
+              color: Colors.blue[800],
+            ),
+          ),
+          const SizedBox(height: 10),
+          serviceEntry.isEmpty
+              ? Text(
+            'No reports listed yet',
+            style: GoogleFonts.poppins(
+              color: Colors.black54,
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+            ),
+          )
+              : ListView.builder(
+            shrinkWrap: true,
+            itemCount: serviceEntry.length,
+            itemBuilder: (context, index) => getRow(index),
           ),
         ],
       ),
@@ -195,15 +274,16 @@ class _VehicleServiceState extends State<VehicleService> {
     );
   }
 
-
   Widget serviceInput(String serviceType) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(serviceType),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(30),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
               const SizedBox(height: 60),
@@ -230,7 +310,9 @@ class _VehicleServiceState extends State<VehicleService> {
               /// -- service details -- ///
               TextField(
                 controller: odometerController,
-                decoration: const InputDecoration(labelText: 'Mileage before service'),
+                decoration: const InputDecoration(
+                  labelText: 'Mileage before service',
+                ),
               ),
               TextFormField(
                 controller: serviceDateController,
@@ -241,13 +323,15 @@ class _VehicleServiceState extends State<VehicleService> {
                 readOnly: true,
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101));
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  );
                   if (pickedDate != null) {
                     print(pickedDate);
-                    String formattedDate = DateFormat('MM/dd/yyyy').format(pickedDate);
+                    String formattedDate =
+                    DateFormat('MM/dd/yyyy').format(pickedDate);
                     print(formattedDate);
                     setState(() {
                       serviceDateController.text = formattedDate;
@@ -295,7 +379,9 @@ class _VehicleServiceState extends State<VehicleService> {
               ),
               TextField(
                 controller: locationController,
-                decoration: const InputDecoration(labelText: 'Location of service'),
+                decoration: const InputDecoration(
+                  labelText: 'Location of service',
+                ),
               ),
               const SizedBox(height: 20),
 
@@ -334,14 +420,8 @@ class _VehicleServiceState extends State<VehicleService> {
                             location: location,
                           ));
                         });
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VehicleReports(serviceEntries: serviceEntry),
-                          ),
-                        );
                       }
+                      Navigator.pop(context);
                     },
                   ),
                   TextButton(

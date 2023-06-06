@@ -17,6 +17,49 @@ class VehicleEntry extends StatefulWidget {
 }
 
 class _VehicleEntryState extends State<VehicleEntry> {
+
+  bool get isRegistrationExpired {
+    final currentDate = DateTime.now();
+    final expiryDate = DateFormat('MM/dd/yyyy').parse(widget.vehicle.regisExp);
+    return currentDate.isAfter(expiryDate);
+  }
+
+
+  bool get shouldShowReminder {
+    final currentDate = DateTime.now();
+    final expiryDate = DateFormat('MM/dd/yyyy').parse(widget.vehicle.regisExp);
+    final reminderDate = expiryDate.subtract(const Duration(days: 30));
+    return currentDate.isAfter(reminderDate) && !isRegistrationExpired;
+  }
+
+  Future<void> showReminderDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Registration Expiry Reminder'),
+        content: const Text('Your vehicle registration will expire soon!'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Dismiss'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (shouldShowReminder) {
+      Future.delayed(Duration.zero, () {
+        showReminderDialog(context);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +81,7 @@ class _VehicleEntryState extends State<VehicleEntry> {
                 ),
               ),
             ),
-            //const SizedBox(height: 20),
+            // const SizedBox(height: 20),
 
             /// -- VEHICLE DETAILS
             Text(
@@ -50,7 +93,7 @@ class _VehicleEntryState extends State<VehicleEntry> {
                 color: Colors.red[400],
               ),
             ),
-            //const SizedBox(height: 10),
+            // const SizedBox(height: 10),
             Text(
               'Car Make: ${widget.vehicle.carMake}',
               style: GoogleFonts.poppins(
@@ -80,7 +123,7 @@ class _VehicleEntryState extends State<VehicleEntry> {
               ),
             ),
 
-            //const SizedBox(height: 20),
+            // const SizedBox(height: 20),
 
             /// -- REGISTRATION DETAILS
             Text(
@@ -92,7 +135,7 @@ class _VehicleEntryState extends State<VehicleEntry> {
                 color: Colors.red[400],
               ),
             ),
-            //const SizedBox(height: 10),
+            // const SizedBox(height: 10),
             Text(
               'Registration Number: ${widget.vehicle.regisNum}',
               style: GoogleFonts.poppins(
@@ -105,17 +148,44 @@ class _VehicleEntryState extends State<VehicleEntry> {
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
-                //color: isRegistrationExpired ? Colors.red : null,
               ),
             ),
-            Text(
-              'Registration Expiry: ${widget.vehicle.regisExp}',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
-                //color: isRegistrationExpired ? Colors.red : null,
+            if(isRegistrationExpired)
+              GestureDetector(
+                onTap: () {
+                  showDialog(context: context, builder: (context) {
+                    return AlertDialog(
+                      content: Text('Your vehicle registration is expired. Please renew as soon as possible!'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('OKAY'),
+                        ),
+                      ],
+                    );
+                  });
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      'Registration Expiry: ${widget.vehicle.regisExp}',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: isRegistrationExpired ? FontWeight.bold: FontWeight.normal,
+                        color: isRegistrationExpired ? Colors.red : null,
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Icon(
+                      Icons.warning,
+                      color: Colors.red,
+                    ),
+                  ],
+                ),
               ),
-            ),
+
             Text(
               'OR Number: ${widget.vehicle.orNum}',
               style: GoogleFonts.poppins(
@@ -152,7 +222,6 @@ class _VehicleEntryState extends State<VehicleEntry> {
                 ),
               ],
             ),
-
           ],
         ),
       ),

@@ -122,7 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
 
 
-      DateTime expiryDate = DateFormat('yyyy-MM-dd').parse(regisExp);
+      DateTime expiryDate = DateFormat('MM/dd/yyyy').parse(regisExp);
       DateTime now = DateTime.now();
       Duration difference = expiryDate.difference(now);
       if (difference <= Duration(days: 30)) {
@@ -767,7 +767,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             const SizedBox(height: 50),
             Text(
-              'All Vehicles',
+              'Your Fleet',
               style: GoogleFonts.montserrat(
                 fontSize: 35,
                 fontWeight: FontWeight.w900,
