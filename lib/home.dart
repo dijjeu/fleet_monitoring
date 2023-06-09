@@ -2,7 +2,9 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:fleet_monitoring/auth/auth.dart';
 import 'package:fleet_monitoring/dashboard_screen.dart';
 import 'package:fleet_monitoring/notification.dart';
+import 'package:fleet_monitoring/profile_screen.dart';
 import 'package:fleet_monitoring/repositories/service_entry.dart';
+import 'package:fleet_monitoring/repositories/user_repository.dart';
 import 'package:fleet_monitoring/vehicle_report.dart';
 import 'package:fleet_monitoring/vehicle_service.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +22,12 @@ class _HomeState extends State<Home> {
 
   final pages = [
     DashboardScreen(),
-    VehicleService(),
     NotificationScreen(payload),
-    VehicleReports(serviceEntries: []),
+    ProfileScreen(userRepository: UserRepository(
+        firstName: '', lastName: '', phoneNumber: '', licenseNumber: '', licenseExpiry: ''
+    )),
   ];
+
 
   static String? get payload => null;
 
@@ -31,9 +35,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final items = <Widget>[
       const Icon(Icons.home_rounded), //home
-      const Icon(Icons.build_rounded), // services
       const Icon(Icons.notifications), //notification
-      const Icon(Icons.report), //vehicle report
+      const Icon(Icons.person_rounded), //vehicle report
     ];
 
     return Scaffold(

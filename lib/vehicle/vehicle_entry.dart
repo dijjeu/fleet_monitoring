@@ -24,6 +24,13 @@ class _VehicleEntryState extends State<VehicleEntry> {
     return currentDate.isAfter(expiryDate);
   }
 
+  bool get isRegistrationAlmost {
+    final currentDate = DateTime.now();
+    final expiryDate = DateFormat('MM/dd/yyyy').parse(widget.vehicle.regisExp);
+    final reminderDate = expiryDate.subtract(const Duration(days: 30));
+    return currentDate.isAfter(reminderDate) && currentDate.isBefore(expiryDate);
+  }
+
 
   bool get shouldShowReminder {
     final currentDate = DateTime.now();
@@ -33,11 +40,15 @@ class _VehicleEntryState extends State<VehicleEntry> {
   }
 
   Future<void> showReminderDialog(BuildContext context) async {
+    final currentDate = DateTime.now();
+    final expiryDate = DateFormat('MM/dd/yyyy').parse(widget.vehicle.regisExp);
+    final daysRemaining = expiryDate.difference(currentDate).inDays;
+
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Registration Expiry Reminder'),
-        content: const Text('Your vehicle registration will expire soon!'),
+        content: Text('Your vehicle registration will expire in $daysRemaining days. Please renew as soon as possible.'),
         actions: [
           TextButton(
             onPressed: () {
@@ -49,6 +60,7 @@ class _VehicleEntryState extends State<VehicleEntry> {
       ),
     );
   }
+
 
   @override
   void initState() {
@@ -77,7 +89,7 @@ class _VehicleEntryState extends State<VehicleEntry> {
                 style: GoogleFonts.poppins(
                   fontSize: 35,
                   fontWeight: FontWeight.w800,
-                  color: Colors.blue[800],
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -90,7 +102,7 @@ class _VehicleEntryState extends State<VehicleEntry> {
               style: GoogleFonts.poppins(
                 fontSize: 25,
                 fontWeight: FontWeight.w600,
-                color: Colors.red[400],
+                color: Colors.blue[800],
               ),
             ),
             // const SizedBox(height: 10),
@@ -132,7 +144,7 @@ class _VehicleEntryState extends State<VehicleEntry> {
               style: GoogleFonts.poppins(
                 fontSize: 25,
                 fontWeight: FontWeight.w600,
-                color: Colors.red[400],
+                color: Colors.blue[800],
               ),
             ),
             // const SizedBox(height: 10),
@@ -155,7 +167,8 @@ class _VehicleEntryState extends State<VehicleEntry> {
                 onTap: () {
                   showDialog(context: context, builder: (context) {
                     return AlertDialog(
-                      content: Text('Your vehicle registration is expired. Please renew as soon as possible!'),
+                      title: Text('Expired Vehicle Registration'),
+                      content: Text('Please avoid using the vehicle and renew as soon as possible!'),
                       actions: [
                         TextButton(
                           onPressed: () {
@@ -173,19 +186,62 @@ class _VehicleEntryState extends State<VehicleEntry> {
                       'Registration Expiry: ${widget.vehicle.regisExp}',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
-                        fontWeight: isRegistrationExpired ? FontWeight.bold: FontWeight.normal,
-                        color: isRegistrationExpired ? Colors.red : null,
+                        fontWeight:
+                          isRegistrationExpired ? FontWeight.bold : FontWeight.normal,
+                        color:
+                          isRegistrationExpired ? Colors.red : null,
+                        fontStyle:
+                          isRegistrationExpired ? FontStyle.italic : FontStyle.normal,
                       ),
                     ),
                     const SizedBox(width: 20),
                     Icon(
-                      Icons.warning,
+                      Icons.dangerous_rounded,
                       color: Colors.red,
                     ),
                   ],
                 ),
               ),
-
+            if(isRegistrationAlmost)
+              GestureDetector(
+                onTap: () {
+                  showDialog(context: context, builder: (context) {
+                    return AlertDialog(
+                      title: Text('Expiring Vehicle Registration'),
+                      content: Text('Your vehicle registration is about to expire. Please renew as soon as possible!'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('OKAY'),
+                        ),
+                      ],
+                    );
+                  });
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      'Registration Expiry: ${widget.vehicle.regisExp}',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight:
+                        isRegistrationAlmost ? FontWeight.bold : FontWeight.normal,
+                        color:
+                        isRegistrationAlmost ? Colors.orange : null,
+                        fontStyle:
+                        isRegistrationAlmost ? FontStyle.italic : FontStyle.normal,
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Icon(
+                      Icons.warning,
+                      color: Colors.orange,
+                    ),
+                  ],
+                ),
+              ),
             Text(
               'OR Number: ${widget.vehicle.orNum}',
               style: GoogleFonts.poppins(

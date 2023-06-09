@@ -125,13 +125,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
       DateTime expiryDate = DateFormat('MM/dd/yyyy').parse(regisExp);
       DateTime now = DateTime.now();
       Duration difference = expiryDate.difference(now);
+
       if (difference <= Duration(days: 30)) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Vehicle Registration Renewal'),
-              content: Text('You need to renew your vehicle registration.'),
+              title: Text('Vehicle Registration Reminder!'),
+              content: Text('Your vehicle registration will expire soon! Please renew as soon as possible!'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else if (difference == Duration.zero) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Vehicle Registration Expired!'),
+              content: Text('Your registration is expired. Please avoid using the vehicle until the registration has been renewed.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -208,8 +227,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                 ],
               ),
-              const SizedBox(height: 10),
-              searchBar(),
               const SizedBox(height: 15),
               Text(
                 'Your Fleet',
@@ -333,18 +350,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           /// -- delete vehicle
                           TextButton(
                             onPressed: () {
-                              if (selectedIndex == pageNum) {
-                                setState(() {
-                                  vehicleDetails.removeAt(selectedIndex);
-                                  selectedIndex = -1;
-                                });
-                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VehicleService(vehicleDetails: vehicleDetails),
+                                ),
+                              );
+
                             },
                             child: Row(
                               children: [
-                                Icon(Icons.delete_outline_rounded, color: Colors.black87),
+                                Icon(Icons.settings, color: Colors.black87),
                                 SizedBox(width: 8),
-                                Text('Delete Vehicle'),
+                                Text('Vehicle Services'),
                               ],
                             ),
                           ),
@@ -517,8 +535,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 TableRow(
                     children: [
-                      Column(children: [Text('2nd to the last digit of plate number')]),
-                      Column(children: [Text('Week')]),
+                      Column(children: [
+                        Text(
+                        '2nd to last digit of the Month',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),]),
+                      Column(children: [
+                        Text(
+                        'Weeks',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),]),
                     ]
                 ),
                 TableRow(
@@ -774,22 +800,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 color: Colors.black87,
               ),
             ),
+            searchBar(),
             vehicleDetails.isEmpty
                 ? Text('No vehicles listed yet...')
                 : Expanded(
-              child: ListView.builder(
-                itemCount: allVehicles.length,
-                itemBuilder: (context, index) {
-                  VehicleDetails vehicle = allVehicles[index];
-                  return Card(
-                    child: ListTile(
-                      title: Text(vehicle.plateNum),
-                      subtitle: Text(vehicle.carMake),
-                    ),
-                  );
-                },
-              ),
-            ),
+                  child: ListView.builder(
+                    itemCount: allVehicles.length,
+                    itemBuilder: (context, index) {
+                      VehicleDetails vehicle = allVehicles[index];
+                      return Card(
+                        elevation: 4,
+                        shadowColor: Colors.grey.shade200,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            vehicle.plateNum,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          subtitle: Text(vehicle.carMake),
+                        ),
+                      );
+                    },
+                  ),
+                ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);

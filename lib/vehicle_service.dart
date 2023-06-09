@@ -1,3 +1,4 @@
+import 'package:fleet_monitoring/repositories/vehicle.dart';
 import 'package:fleet_monitoring/services/battery_replace.dart';
 import 'package:fleet_monitoring/services/wiper_replace.dart';
 import 'package:fleet_monitoring/vehicle_report.dart';
@@ -9,6 +10,10 @@ import 'services/service_card.dart';
 import 'repositories/service_entry.dart';
 
 class VehicleService extends StatefulWidget {
+  final List<VehicleDetails> vehicleDetails;
+
+  VehicleService({Key? key, required this.vehicleDetails}) : super(key: key);
+
   @override
   State<VehicleService> createState() => _VehicleServiceState();
 }
@@ -22,6 +27,8 @@ class _VehicleServiceState extends State<VehicleService>
   TextEditingController serviceTimeController = TextEditingController();
 
   List<ServiceEntry> serviceEntry = [];
+  VehicleDetails? selectedVehicle;
+  late String plateNumber = '';
 
   @override
   void initState() {
@@ -46,17 +53,19 @@ class _VehicleServiceState extends State<VehicleService>
               padding: EdgeInsets.only(top: 40),
               indicatorColor: Colors.red[400],
               indicatorWeight: 3,
-
               tabs: [
                 Tab(
                   child: Text(
-                      'Services',
-                    style: TextStyle(
-                      color: Colors.black87
-                    ),
+                    'Services',
+                    style: TextStyle(color: Colors.black87),
                   ),
                 ),
-                Tab(text: 'Reports'),
+                Tab(
+                  child: Text(
+                    'Reports',
+                    style: TextStyle(color: Colors.black87),
+                  ),
+                ),
               ],
             ),
             Expanded(
@@ -72,7 +81,6 @@ class _VehicleServiceState extends State<VehicleService>
       ),
     );
   }
-
 
   Widget buildServicesTab() {
     return SingleChildScrollView(
@@ -249,27 +257,42 @@ class _VehicleServiceState extends State<VehicleService>
               : ListView.builder(
             shrinkWrap: true,
             itemCount: serviceEntry.length,
-            itemBuilder: (context, index) => getRow(index),
+            itemBuilder: (context, index) => getRow(index, plateNumber),
           ),
         ],
       ),
     );
   }
 
-  Widget getRow(int index) {
+  /*void showServiceDialog () {
+    showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text('Vehicle Plate Number'),
+        content: Column(
+          children: [
+            Text('Mileage before service: ${odometerController.text}'),
+            Text('Service Date: ${serviceDateController.text}'),
+            Text('Service Time: ${serviceTimeController.text}'),
+            Text('Location of Service: ${locationController.text}')
+          ],
+        ),
+      );
+    });
+  }*/
+
+  Widget getRow(int index, String plateNumber) {
     final ServiceEntry entry = serviceEntry[index];
     return Card(
       child: ListTile(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '${entry.serviceType}: ${entry.serviceDate}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(entry.serviceTime),
+            Text(plateNumber, style: TextStyle(fontWeight: FontWeight.bold),),
+            Text('${entry.serviceType}',),
+            Text('${entry.serviceDate} - ${entry.serviceTime}'),
           ],
         ),
+        trailing: Icon(Icons.arrow_circle_right_outlined),
       ),
     );
   }
@@ -307,6 +330,23 @@ class _VehicleServiceState extends State<VehicleService>
               ),
               const SizedBox(height: 20),
 
+              /// -- vehicle dropdown -- ///
+              DropdownButton<VehicleDetails>(
+                value: selectedVehicle,
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedVehicle = newValue;
+                    //plateNumber = newValue?.plateNum ?? ''; // Update plateNumber variable
+                  });
+                },
+                  items: widget.vehicleDetails.map((vehicle) {
+                  return DropdownMenuItem<VehicleDetails>(
+                    value: vehicle,
+                    child: Text(vehicle.plateNum),
+                  );
+                }).toList(),
+                hint: Text('Select a vehicle'),
+              ),
               /// -- service details -- ///
               TextField(
                 controller: odometerController,
@@ -331,7 +371,7 @@ class _VehicleServiceState extends State<VehicleService>
                   if (pickedDate != null) {
                     print(pickedDate);
                     String formattedDate =
-                    DateFormat('MM/dd/yyyy').format(pickedDate);
+                        DateFormat('MM/dd/yyyy').format(pickedDate);
                     print(formattedDate);
                     setState(() {
                       serviceDateController.text = formattedDate;
@@ -390,17 +430,13 @@ class _VehicleServiceState extends State<VehicleService>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                    child: Text(
-                      'Done',
-                      style: TextStyle(
-                        color: Colors.red[400],
-                      ),
-                    ),
                     onPressed: () {
                       final String odometer = odometerController.text.trim();
                       final String location = locationController.text.trim();
-                      final String serviceDate = serviceDateController.text.trim();
-                      final String serviceTime = serviceTimeController.text.trim();
+                      final String serviceDate =
+                          serviceDateController.text.trim();
+                      final String serviceTime =
+                          serviceTimeController.text.trim();
 
                       if (odometer.isNotEmpty &&
                           location.isNotEmpty &&
@@ -423,12 +459,28 @@ class _VehicleServiceState extends State<VehicleService>
                       }
                       Navigator.pop(context);
                     },
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
+                  const SizedBox(width: 20),
                   TextButton(
-                    child: const Text('Cancel'),
                     onPressed: () {
                       Navigator.pop(context);
                     },
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ],
               ),
