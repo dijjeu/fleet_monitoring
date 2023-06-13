@@ -54,16 +54,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              // Navigate the user to the home page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Home()),
-              );
-            },
-            child: const Text('Go to Home'),
-          ),
         ],
       ),
     );

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NotificationScreen extends StatefulWidget {
-  final String? payload;
+  final List<String> appointmentNotifications;
 
-  NotificationScreen(this.payload);
+  NotificationScreen({Key? key, required this.appointmentNotifications})
+      : super(key: key);
 
   @override
   _NotificationScreenState createState() => _NotificationScreenState();
@@ -13,19 +14,6 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   List<String> notifications = [];
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.payload != null) {
-      addNotification(widget.payload!);
-    }
-  }
-
-  void addNotification(String notification) {
-    setState(() {
-      notifications.add(notification);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

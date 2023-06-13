@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
 
   final pages = [
     DashboardScreen(),
-    NotificationScreen(payload),
+    NotificationScreen(appointmentNotifications: []),
     ProfileScreen(userRepository: UserRepository(
         firstName: '', lastName: '', phoneNumber: '', licenseNumber: '', licenseExpiry: ''
     )),

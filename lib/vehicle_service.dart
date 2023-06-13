@@ -1,3 +1,5 @@
+import 'package:file_picker/file_picker.dart';
+import 'package:fleet_monitoring/notification.dart';
 import 'package:fleet_monitoring/repositories/vehicle.dart';
 import 'package:fleet_monitoring/services/battery_replace.dart';
 import 'package:fleet_monitoring/services/wiper_replace.dart';
@@ -5,6 +7,7 @@ import 'package:fleet_monitoring/vehicle_report.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
 
 import 'services/service_card.dart';
 import 'repositories/service_entry.dart';
@@ -27,8 +30,11 @@ class _VehicleServiceState extends State<VehicleService>
   TextEditingController serviceTimeController = TextEditingController();
 
   List<ServiceEntry> serviceEntry = [];
+  List<String> appointmentNotification = [];
   VehicleDetails? selectedVehicle;
   late String plateNumber = '';
+  late String? selectedFilePath;
+
 
   @override
   void initState() {
@@ -195,7 +201,12 @@ class _VehicleServiceState extends State<VehicleService>
                       MaterialPageRoute(
                         builder: (context) => serviceInput('Appointments'),
                       ),
-                    );
+                    ).then((value) {
+                      if (value != null) {
+                        String appointment = 'Appointment: $value';
+                        addAppointmentNotification(appointment);
+                      }
+                    });
                   },
                 ),
                 ServiceCard(
@@ -259,49 +270,188 @@ class _VehicleServiceState extends State<VehicleService>
             itemCount: serviceEntry.length,
             itemBuilder: (context, index) => getRow(index, plateNumber),
           ),
+
+          // new notification widget
+          NotificationScreen(appointmentNotifications: appointmentNotification),
         ],
       ),
     );
   }
 
-  /*void showServiceDialog () {
-    showDialog(context: context, builder: (context) {
-      return AlertDialog(
-        title: Text('Vehicle Plate Number'),
-        content: Column(
-          children: [
-            Text('Mileage before service: ${odometerController.text}'),
-            Text('Service Date: ${serviceDateController.text}'),
-            Text('Service Time: ${serviceTimeController.text}'),
-            Text('Location of Service: ${locationController.text}')
+  void showServiceDialog(
+      String odometer,
+      String serviceDate,
+      String serviceTime,
+      String location,
+      ) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(
+            child: Text(
+              plateNumber,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 25,
+                fontWeight: FontWeight.w800,
+                color: Colors.blue[800],
+              ),
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Mileage before service:'),
+              Center(child: Text('$odometer km', style: TextStyle(fontWeight: FontWeight.bold),)),
+              Text('Service Date:'),
+              Center(child: Text('$serviceDate', style: TextStyle(fontWeight: FontWeight.bold),)),
+              Text('Service Time:'),
+              Center(child: Text('$serviceTime', style: TextStyle(fontWeight: FontWeight.bold),)),
+              Text('Location of Service:'),
+              Center(child: Text('$location', style: TextStyle(fontWeight: FontWeight.bold),)),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (selectedFilePath != null) {
+                      OpenFile.open(selectedFilePath!);
+                    }
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.remove_red_eye, color: Colors.black54,),
+                      const SizedBox(width: 10),
+                      Text(
+                        'View Receipt',
+                        style: TextStyle(
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade300),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20), // Adjust the value to control the roundness
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Back'),
+              ),
+            ),
           ],
-        ),
-      );
+        );
+      },
+    );
+  }
+
+  void addAppointmentNotification (String appointment) {
+    setState(() {
+      appointmentNotification.add(appointment);
     });
-  }*/
+  }
+
+
+  Future<void> _openFileExplorer() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx'],
+      );
+      if (result != null) {
+        String? filePath = result.files.single.path;
+        if (filePath != null) {
+          setState(() {
+            selectedFilePath = filePath;
+            OpenFile.open(filePath);
+          });
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('File Selected'),
+                content: Text('The file has been successfully selected.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('An error occurred while selecting the file.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+
 
   Widget getRow(int index, String plateNumber) {
     final ServiceEntry entry = serviceEntry[index];
-    return Card(
-      child: ListTile(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(plateNumber, style: TextStyle(fontWeight: FontWeight.bold),),
-            Text('${entry.serviceType}',),
-            Text('${entry.serviceDate} - ${entry.serviceTime}'),
-          ],
+    return GestureDetector(
+      onTap: () => showServiceDialog(
+        entry.odometer,
+        entry.serviceDate,
+        entry.serviceTime,
+        entry.location,
+      ),
+      child: Card(
+        child: ListTile(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                plateNumber, // Use plate number from ServiceEntry object
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text('${entry.serviceType}'),
+              Text('${entry.serviceDate} - ${entry.serviceTime}'),
+            ],
+          ),
+          trailing: Icon(Icons.arrow_circle_right_outlined),
         ),
-        trailing: Icon(Icons.arrow_circle_right_outlined),
       ),
     );
   }
 
+
   Widget serviceInput(String serviceType) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(serviceType),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(30),
         child: SingleChildScrollView(
@@ -336,7 +486,7 @@ class _VehicleServiceState extends State<VehicleService>
                 onChanged: (newValue) {
                   setState(() {
                     selectedVehicle = newValue;
-                    //plateNumber = newValue?.plateNum ?? ''; // Update plateNumber variable
+                    plateNumber = newValue?.plateNum ?? ''; // Update plateNumber variable
                   });
                 },
                   items: widget.vehicleDetails.map((vehicle) {
@@ -353,6 +503,8 @@ class _VehicleServiceState extends State<VehicleService>
                 decoration: const InputDecoration(
                   labelText: 'Mileage before service',
                 ),
+                maxLength: 5,
+                keyboardType: TextInputType.number,
               ),
               TextFormField(
                 controller: serviceDateController,
@@ -424,6 +576,33 @@ class _VehicleServiceState extends State<VehicleService>
                 ),
               ),
               const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  _openFileExplorer();
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.upload, color: Colors.black54,),
+                    const SizedBox(width: 10),
+                    Text(
+                        'Upload Receipt',
+                      style: TextStyle(
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade300),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20), // Adjust the value to control the roundness
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
 
               /// -- text buttons -- ///
               Row(
@@ -462,13 +641,13 @@ class _VehicleServiceState extends State<VehicleService>
                     child: Text(
                       'Submit',
                       style: TextStyle(
-                        color: Colors.blue[800],
-                        fontSize: 18,
+                        color: Colors.red[400],
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 20),
+                  const SizedBox(width: 40),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -477,7 +656,7 @@ class _VehicleServiceState extends State<VehicleService>
                       'Cancel',
                       style: TextStyle(
                         color: Colors.blue[800],
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

@@ -242,6 +242,19 @@ class _VehicleEntryState extends State<VehicleEntry> {
                   ],
                 ),
               ),
+            Row(
+              children: [
+                Text(
+                  'Registration Expiry: ${widget.vehicle.regisExp}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                    fontStyle: FontStyle.normal,
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            ),
             Text(
               'OR Number: ${widget.vehicle.orNum}',
               style: GoogleFonts.poppins(

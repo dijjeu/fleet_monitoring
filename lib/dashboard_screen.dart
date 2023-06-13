@@ -167,36 +167,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  void onDidReceiveNotificationResponse(
-      String? payload, BuildContext context) async {
-    if (payload != null) {
-      debugPrint('notification payload: $payload');
-      await Navigator.push(
-        context,
-        MaterialPageRoute<void>(builder: (context) => NotificationScreen(payload)),
-      );
-    }
-  }
-
-  Future<void> _showNotification(String title, String message) async {
-    const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails('your channel id', 'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
-    const NotificationDetails notificationDetails =
-    NotificationDetails(android: androidNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(
-        0, title, message, notificationDetails,
-        payload: 'item x');
-  }
-
-  /*final payload = 'This is a sample payload';
-            _showNotification('Hello', 'This is a sample notification');
-            onDidReceiveNotificationResponse(payload, context);
-  */
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -439,7 +409,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.all(20),
               child: Table(
                 defaultColumnWidth: FixedColumnWidth(120),
                 border: TableBorder.all(
@@ -537,7 +506,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     children: [
                       Column(children: [
                         Text(
-                        '2nd to last digit of the Month',
+                        '2nd to last digit of the Plate Number',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),]),
                       Column(children: [
@@ -613,6 +582,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             TextField(
               controller: plateNumController,
               decoration: const InputDecoration(labelText: 'Plate Number'),
+              maxLength: 7,
             ),
             const SizedBox(height: 20),
             /// -- registration details -- ///
@@ -629,6 +599,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               controller: regisNumController,
               decoration:
               const InputDecoration(labelText: 'Registration Number'),
+              maxLength: 15,
             ),
             TextFormField(
               controller: regisDateController,
