@@ -3,14 +3,17 @@ import 'package:fleet_monitoring/notification.dart';
 import 'package:fleet_monitoring/repositories/vehicle.dart';
 import 'package:fleet_monitoring/services/battery_replace.dart';
 import 'package:fleet_monitoring/services/wiper_replace.dart';
-import 'package:fleet_monitoring/vehicle_report.dart';
+import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
+import 'package:provider/provider.dart';
 
-import 'services/service_card.dart';
-import 'repositories/service_entry.dart';
+import '../repositories/app_data.dart';
+import '../repositories/app_state.dart';
+import '../services/service_card.dart';
+import '../repositories/service_entry.dart';
 
 class VehicleService extends StatefulWidget {
   final List<VehicleDetails> vehicleDetails;
@@ -29,11 +32,17 @@ class _VehicleServiceState extends State<VehicleService>
   TextEditingController serviceDateController = TextEditingController();
   TextEditingController serviceTimeController = TextEditingController();
 
+  bool appointmentSet = false;
+  DateTime appointmentDate = DateTime.now().add(Duration(days: 7));
+
   List<ServiceEntry> serviceEntry = [];
   List<String> appointmentNotification = [];
   VehicleDetails? selectedVehicle;
   late String plateNumber = '';
   late String? selectedFilePath;
+  String selectedPlateNumber = '';
+  
+  /// --- APPOINTMENT --- ///
 
 
   @override
@@ -201,12 +210,7 @@ class _VehicleServiceState extends State<VehicleService>
                       MaterialPageRoute(
                         builder: (context) => serviceInput('Appointments'),
                       ),
-                    ).then((value) {
-                      if (value != null) {
-                        String appointment = 'Appointment: $value';
-                        addAppointmentNotification(appointment);
-                      }
-                    });
+                    );
                   },
                 ),
                 ServiceCard(
@@ -242,6 +246,11 @@ class _VehicleServiceState extends State<VehicleService>
   }
 
   Widget buildReportsTab() {
+    final appState = Provider.of<AppState>(context);
+    if (selectedVehicle != null) {
+      plateNumber = selectedVehicle!.plateNum;
+    }
+
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -270,19 +279,18 @@ class _VehicleServiceState extends State<VehicleService>
             itemCount: serviceEntry.length,
             itemBuilder: (context, index) => getRow(index, plateNumber),
           ),
-
-          // new notification widget
-          NotificationScreen(appointmentNotifications: appointmentNotification),
         ],
       ),
     );
   }
+
 
   void showServiceDialog(
       String odometer,
       String serviceDate,
       String serviceTime,
       String location,
+      String plateNumber,
       ) {
     showDialog(
       context: context,
@@ -290,7 +298,8 @@ class _VehicleServiceState extends State<VehicleService>
         return AlertDialog(
           title: Center(
             child: Text(
-              plateNumber,
+              // display selected vehicle plate number
+              selectedVehicle?.plateNum ?? '',
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 fontSize: 25,
@@ -359,12 +368,6 @@ class _VehicleServiceState extends State<VehicleService>
     );
   }
 
-  void addAppointmentNotification (String appointment) {
-    setState(() {
-      appointmentNotification.add(appointment);
-    });
-  }
-
 
   Future<void> _openFileExplorer() async {
     try {
@@ -420,23 +423,27 @@ class _VehicleServiceState extends State<VehicleService>
   }
 
 
-
   Widget getRow(int index, String plateNumber) {
+    final appState = Provider.of<AppState>(context);
     final ServiceEntry entry = serviceEntry[index];
+    final selectedVehicle = appState.vehicleDetails.firstWhere((vehicle) => vehicle.plateNum == plateNumber);
     return GestureDetector(
-      onTap: () => showServiceDialog(
-        entry.odometer,
-        entry.serviceDate,
-        entry.serviceTime,
-        entry.location,
-      ),
+      onTap: () {
+        showServiceDialog(
+          entry.odometer,
+          entry.serviceDate,
+          entry.serviceTime,
+          entry.location,
+          selectedPlateNumber,
+        );
+      },
       child: Card(
         child: ListTile(
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                plateNumber, // Use plate number from ServiceEntry object
+                selectedPlateNumber,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text('${entry.serviceType}'),
@@ -447,10 +454,16 @@ class _VehicleServiceState extends State<VehicleService>
         ),
       ),
     );
+
   }
 
 
+
   Widget serviceInput(String serviceType) {
+    final appState = Provider.of<AppState>(context);
+    if (selectedVehicle != null) {
+      selectedPlateNumber = selectedVehicle!.plateNum;
+    }
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(30),
@@ -486,16 +499,16 @@ class _VehicleServiceState extends State<VehicleService>
                 onChanged: (newValue) {
                   setState(() {
                     selectedVehicle = newValue;
-                    plateNumber = newValue?.plateNum ?? ''; // Update plateNumber variable
+                    selectedPlateNumber = newValue?.plateNum ?? '';
                   });
                 },
-                  items: widget.vehicleDetails.map((vehicle) {
+                items: appState.vehicleDetails.map((vehicle) {
                   return DropdownMenuItem<VehicleDetails>(
                     value: vehicle,
                     child: Text(vehicle.plateNum),
                   );
                 }).toList(),
-                hint: Text('Select a vehicle'),
+                hint: selectedVehicle != null ? Text(selectedVehicle!.plateNum) : Text('Select a vehicle'),
               ),
               /// -- service details -- ///
               TextField(
@@ -608,14 +621,12 @@ class _VehicleServiceState extends State<VehicleService>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(
-                    onPressed: () {
+                  ElevatedButton(
+                    onPressed: () async {
                       final String odometer = odometerController.text.trim();
                       final String location = locationController.text.trim();
-                      final String serviceDate =
-                          serviceDateController.text.trim();
-                      final String serviceTime =
-                          serviceTimeController.text.trim();
+                      final String serviceDate = serviceDateController.text.trim();
+                      final String serviceTime = serviceTimeController.text.trim();
 
                       if (odometer.isNotEmpty &&
                           location.isNotEmpty &&
@@ -633,6 +644,7 @@ class _VehicleServiceState extends State<VehicleService>
                             serviceDate: serviceDate,
                             serviceTime: serviceTime,
                             location: location,
+                            plateNumber: selectedPlateNumber, // Store the selected plate number in the service entry
                           ));
                         });
                       }

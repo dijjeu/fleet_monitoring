@@ -1,12 +1,14 @@
 import 'package:fleet_monitoring/login/login.dart';
 import 'package:fleet_monitoring/notification.dart';
+import 'package:fleet_monitoring/repositories/app_state.dart';
 import 'package:fleet_monitoring/repositories/vehicle.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_entry.dart';
-import 'package:fleet_monitoring/vehicle_service.dart';
+import 'package:fleet_monitoring/vehicle/vehicle_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {
 
@@ -98,6 +100,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           regisExp: regisExp,
           orDateIssued: orDateIssued,
         );
+        final appState = Provider.of<AppState>(context, listen: false);
+        appState.addVehicle(newVehicle);
         vehicleDetails.add(newVehicle);
         allVehicles.add(newVehicle);
       });
@@ -167,6 +171,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  void deleteVehicle() {
+    showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text('Delete Vehicle'),
+        content: Text('Are you sure you want to delete this vehicle?'),
+        actions: [
+          TextButton(
+              onPressed: () {
+                setState(() {
+                  vehicleDetails.removeAt(pageNum);
+                  Navigator.pop(context);
+                });
+              },
+              child: Text('Yes'),
+          ),
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('No'),
+          ),
+        ],
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -188,13 +218,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   SizedBox(width: 170),
-                  GestureDetector(
-                    child: Icon(Icons.logout_rounded),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
-                    },
-                  ),
-
                 ],
               ),
               const SizedBox(height: 15),
@@ -319,20 +342,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           /// -- delete vehicle
                           TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => VehicleService(vehicleDetails: vehicleDetails),
-                                ),
-                              );
-
-                            },
+                            onPressed: deleteVehicle,
                             child: Row(
                               children: [
-                                Icon(Icons.settings, color: Colors.black87),
+                                Icon(Icons.delete_outline_rounded, color: Colors.black87),
                                 SizedBox(width: 8),
-                                Text('Vehicle Services'),
+                                Text('Delete Vehicle'),
                               ],
                             ),
                           ),

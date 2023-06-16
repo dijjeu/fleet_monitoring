@@ -5,8 +5,7 @@ import 'package:fleet_monitoring/notification.dart';
 import 'package:fleet_monitoring/profile_screen.dart';
 import 'package:fleet_monitoring/repositories/service_entry.dart';
 import 'package:fleet_monitoring/repositories/user_repository.dart';
-import 'package:fleet_monitoring/vehicle_report.dart';
-import 'package:fleet_monitoring/vehicle_service.dart';
+import 'package:fleet_monitoring/vehicle/vehicle_service.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -22,10 +21,9 @@ class _HomeState extends State<Home> {
 
   final pages = [
     DashboardScreen(),
+    VehicleService(vehicleDetails: [],),
     NotificationScreen(appointmentNotifications: []),
-    ProfileScreen(userRepository: UserRepository(
-        firstName: '', lastName: '', phoneNumber: '', licenseNumber: '', licenseExpiry: ''
-    )),
+    ProfileScreen(),
   ];
 
 
@@ -35,6 +33,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final items = <Widget>[
       const Icon(Icons.home_rounded), //home
+      const Icon(Icons.sentiment_satisfied_rounded), // vehicle service
       const Icon(Icons.notifications), //notification
       const Icon(Icons.person_rounded), //vehicle report
     ];
