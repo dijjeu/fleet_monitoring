@@ -82,7 +82,7 @@ class NotificationScreen extends StatelessWidget {
             ),
           ),
           subtitle: Text(
-            'Your vehicle registration is expired. Please avoid using the vehicle and renew as soon as possible!',
+            'Your vehicle registration is expired for ${vehicle.plateNum}. Please avoid using the vehicle and renew as soon as possible!',
           ),
         ),
       );
