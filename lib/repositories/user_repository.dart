@@ -6,6 +6,7 @@ class UserRepository {
   final String phoneNumber;
   final String licenseNumber;
   final String licenseExpiry;
+  String? registrationExpiry;
 
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -19,5 +20,6 @@ class UserRepository {
     required this.phoneNumber,
     required this.licenseNumber,
     required this.licenseExpiry,
+    this.registrationExpiry,
   });
 }

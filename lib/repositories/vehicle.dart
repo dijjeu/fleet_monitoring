@@ -1,4 +1,6 @@
-class VehicleDetails {
+import 'package:flutter/material.dart';
+
+class VehicleDetails with ChangeNotifier{
   String carMake;
   String color;
   String yearModel;

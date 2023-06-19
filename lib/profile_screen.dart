@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import 'notification.dart';
+
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -81,23 +83,20 @@ class ProfileScreen extends StatelessWidget {
                     if (isLicenseExpiring)
                       GestureDetector(
                         onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Expired Driver\'s License'),
-                                  content: Text(
-                                      'Your driver\'s license is expired. Please avoid driving and renew as soon as possible!'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('OKAY'),
-                                    ),
-                                  ],
-                                );
-                              });
+                          showDialog(context: context, builder: (context) {
+                            return AlertDialog(
+                              title: Text('Expired Driver\'s License'),
+                              content: Text('Your driver\'s license is expired. Please avoid driving and renew as soon as possible!'),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Dismiss'),
+                                ),
+                              ],
+                            );
+                          });
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -107,14 +106,14 @@ class ProfileScreen extends StatelessWidget {
                               style: GoogleFonts.montserrat(
                                 fontSize: 14,
                                 fontStyle:
-                                    isLicenseExpiring ? FontStyle.italic : null,
+                                isLicenseExpiring ? FontStyle.italic : null,
                                 fontWeight:
-                                    isLicenseExpiring ? FontWeight.bold : null,
-                                color: isLicenseExpiring ? Colors.red : null,
+                                isLicenseExpiring ? FontWeight.bold : null,
+                                color: isLicenseExpiring ? Colors.red[400] : null,
                               ),
                             ),
                             const SizedBox(width: 10),
-                            Icon(Icons.warning, color: Colors.red),
+                            Icon(Icons.warning, color: Colors.red[400]),
                           ],
                         ),
                       )
@@ -159,6 +158,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       )
                     else
+
                       /// -- driver's license is not expired
                       Text(
                         'License Expiry: ${licenseExpiryDate != null ? DateFormat('MM/dd/yyyy').format(licenseExpiryDate) : 'N/A'}',
@@ -169,22 +169,27 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     const SizedBox(height: 40),
                     ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Logout', style: TextStyle(color: Colors.black87)),
-                            const SizedBox(width: 10),
-                            Icon(Icons.logout_rounded, color: Colors.black87),
-                          ],
-                        ),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Login()));
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Logout',
+                              style: TextStyle(color: Colors.black87)),
+                          const SizedBox(width: 10),
+                          Icon(Icons.logout_rounded, color: Colors.black87),
+                        ],
+                      ),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade300),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.grey.shade300),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20), // Adjust the value to control the roundness
+                            borderRadius: BorderRadius.circular(
+                                20), // Adjust the value to control the roundness
                           ),
                         ),
                       ),

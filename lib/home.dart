@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
   final pages = [
     DashboardScreen(),
     VehicleService(vehicleDetails: [],),
-    NotificationScreen(appointmentNotifications: []),
+    NotificationScreen(),
     ProfileScreen(),
   ];
 

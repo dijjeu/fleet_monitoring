@@ -2,7 +2,10 @@ import 'package:fleet_monitoring/repositories/vehicle.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../repositories/app_state.dart';
 
 class VehicleEntry extends StatefulWidget {
   final VehicleDetails vehicle;
@@ -65,12 +68,14 @@ class _VehicleEntryState extends State<VehicleEntry> {
   @override
   void initState() {
     super.initState();
+      Provider.of<AppState>(context, listen: false).setVehicleDetail(widget.vehicle);
     if (shouldShowReminder) {
       Future.delayed(Duration.zero, () {
         showReminderDialog(context);
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -187,11 +192,11 @@ class _VehicleEntryState extends State<VehicleEntry> {
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight:
-                          isRegistrationExpired ? FontWeight.bold : FontWeight.normal,
+                        isRegistrationExpired ? FontWeight.bold : FontWeight.normal,
                         color:
-                          isRegistrationExpired ? Colors.red : null,
+                        isRegistrationExpired ? Colors.red : null,
                         fontStyle:
-                          isRegistrationExpired ? FontStyle.italic : FontStyle.normal,
+                        isRegistrationExpired ? FontStyle.italic : FontStyle.normal,
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -242,7 +247,8 @@ class _VehicleEntryState extends State<VehicleEntry> {
                   ],
                 ),
               ),
-            Row(
+
+            /*Row(
               children: [
                 Text(
                   'Registration Expiry: ${widget.vehicle.regisExp}',
@@ -254,7 +260,7 @@ class _VehicleEntryState extends State<VehicleEntry> {
                 ),
                 const SizedBox(width: 20),
               ],
-            ),
+            ),*/
             Text(
               'OR Number: ${widget.vehicle.orNum}',
               style: GoogleFonts.poppins(

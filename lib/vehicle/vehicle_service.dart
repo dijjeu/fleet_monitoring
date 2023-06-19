@@ -248,9 +248,8 @@ class _VehicleServiceState extends State<VehicleService>
   Widget buildReportsTab() {
     final appState = Provider.of<AppState>(context);
     if (selectedVehicle != null) {
-      plateNumber = selectedVehicle!.plateNum;
+      selectedPlateNumber = selectedVehicle!.plateNum;
     }
-
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -277,12 +276,13 @@ class _VehicleServiceState extends State<VehicleService>
               : ListView.builder(
             shrinkWrap: true,
             itemCount: serviceEntry.length,
-            itemBuilder: (context, index) => getRow(index, plateNumber),
+            itemBuilder: (context, index) => getRow(index, selectedPlateNumber),
           ),
         ],
       ),
     );
   }
+
 
 
   void showServiceDialog(

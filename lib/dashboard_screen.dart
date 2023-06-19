@@ -46,6 +46,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<VehicleDetails> allVehicles = List.empty(growable: true);
 
   int selectedIndex = -1;
+  String searchText = '';
+
 
 
   @override
@@ -172,12 +174,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void deleteVehicle() {
-    showDialog(context: context, builder: (context) {
-      return AlertDialog(
-        title: Text('Delete Vehicle'),
-        content: Text('Are you sure you want to delete this vehicle?'),
-        actions: [
-          TextButton(
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Delete Vehicle'),
+          content: Text('Are you sure you want to delete this vehicle?'),
+          actions: [
+            TextButton(
               onPressed: () {
                 setState(() {
                   vehicleDetails.removeAt(pageNum);
@@ -185,17 +189,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 });
               },
               child: Text('Yes'),
-          ),
-          TextButton(
+            ),
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
               child: Text('No'),
-          ),
-        ],
-      );
-    });
+            ),
+          ],
+        );
+      },
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +252,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         return child!;
                       },
                       child: Container(
-                        child: Image.asset('assets/delivery-truck.png', fit: BoxFit.fitWidth,),
+                        child: Image.asset(
+                          'assets/delivery-truck.png',
+                          fit: BoxFit.fitWidth,
+                        ),
                         margin: const EdgeInsets.only(
                           right: 4,
                           left: 4,
@@ -260,8 +269,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                     );
+
                   },
-                  itemCount: vehicleDetails.length,
+                  itemCount: vehicleDetails
+                      .where((vehicle) =>
+                  vehicle.carMake.toLowerCase().contains(searchText.toLowerCase()) ||
+                      vehicle.plateNum.toLowerCase().contains(searchText.toLowerCase()))
+                      .length,
+
                 ),
               ),
               const SizedBox(height: 2),
@@ -398,7 +413,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget searchBar() {
-    String searchText = '';
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
       decoration: BoxDecoration(
@@ -417,6 +431,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
 
   Widget regisExpiry() {
     return Scaffold(
