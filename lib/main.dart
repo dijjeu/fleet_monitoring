@@ -1,9 +1,8 @@
 import 'package:fleet_monitoring/login/login.dart';
 import 'package:fleet_monitoring/repositories/app_state.dart';
+import 'package:fleet_monitoring/repositories/service_entry.dart';
 import 'package:fleet_monitoring/repositories/vehicle.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -26,6 +25,15 @@ void main() {
             regisExp: '',
             orDateIssued: '',
           ),
+        ),
+        ChangeNotifierProvider<ServiceEntry>(
+          create: (_) => ServiceEntry(
+              serviceType: 'Appointment',
+              odometer: '',
+              serviceDate: '',
+              serviceTime: '',
+              location: '',
+              plateNumber: ''),
         ),
       ],
       child: MyApp(),

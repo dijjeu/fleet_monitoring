@@ -1,10 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:fleet_monitoring/auth/auth.dart';
 import 'package:fleet_monitoring/dashboard_screen.dart';
 import 'package:fleet_monitoring/notification.dart';
 import 'package:fleet_monitoring/profile_screen.dart';
-import 'package:fleet_monitoring/repositories/service_entry.dart';
-import 'package:fleet_monitoring/repositories/user_repository.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_service.dart';
 import 'package:flutter/material.dart';
 

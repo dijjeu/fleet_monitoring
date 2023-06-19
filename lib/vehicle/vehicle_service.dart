@@ -1,16 +1,10 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:fleet_monitoring/notification.dart';
 import 'package:fleet_monitoring/repositories/vehicle.dart';
-import 'package:fleet_monitoring/services/battery_replace.dart';
-import 'package:fleet_monitoring/services/wiper_replace.dart';
-import 'package:fleet_monitoring/vehicle/vehicle_report.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
-
-import '../repositories/app_data.dart';
 import '../repositories/app_state.dart';
 import '../services/service_card.dart';
 import '../repositories/service_entry.dart';
@@ -34,6 +28,7 @@ class _VehicleServiceState extends State<VehicleService>
 
   bool appointmentSet = false;
   DateTime appointmentDate = DateTime.now().add(Duration(days: 7));
+  bool showAppointmentCard = true; // Set this variable to true to show the appointment card
 
   List<ServiceEntry> serviceEntry = [];
   List<String> appointmentNotification = [];
@@ -41,13 +36,14 @@ class _VehicleServiceState extends State<VehicleService>
   late String plateNumber = '';
   late String? selectedFilePath;
   String selectedPlateNumber = '';
-  
+
   /// --- APPOINTMENT --- ///
 
 
   @override
   void initState() {
     super.initState();
+    Provider.of<AppState>(context, listen: false).setServiceEntries(serviceEntry);
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -201,18 +197,21 @@ class _VehicleServiceState extends State<VehicleService>
                     );
                   },
                 ),
-                ServiceCard(
-                  title: 'Appointments',
-                  image: 'assets/images/appointment.png',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => serviceInput('Appointments'),
-                      ),
-                    );
-                  },
-                ),
+
+                /// -- APPOINTMENT -- ///
+                if (showAppointmentCard) // Conditionally render the appointment card
+                  ServiceCard(
+                    title: 'Appointments',
+                    image: 'assets/images/appointment.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => appointmentForm(),
+                        ),
+                      );
+                    },
+                  ),
                 ServiceCard(
                   title: 'Repairs',
                   image: 'assets/images/repair.png',
@@ -246,7 +245,6 @@ class _VehicleServiceState extends State<VehicleService>
   }
 
   Widget buildReportsTab() {
-    final appState = Provider.of<AppState>(context);
     if (selectedVehicle != null) {
       selectedPlateNumber = selectedVehicle!.plateNum;
     }
@@ -424,9 +422,7 @@ class _VehicleServiceState extends State<VehicleService>
 
 
   Widget getRow(int index, String plateNumber) {
-    final appState = Provider.of<AppState>(context);
     final ServiceEntry entry = serviceEntry[index];
-    final selectedVehicle = appState.vehicleDetails.firstWhere((vehicle) => vehicle.plateNum == plateNumber);
     return GestureDetector(
       onTap: () {
         showServiceDialog(
@@ -443,7 +439,7 @@ class _VehicleServiceState extends State<VehicleService>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                selectedPlateNumber,
+                entry.plateNumber,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text('${entry.serviceType}'),
@@ -457,6 +453,232 @@ class _VehicleServiceState extends State<VehicleService>
 
   }
 
+  Widget appointmentForm() {
+    final appState = Provider.of<AppState>(context);
+    if (selectedVehicle != null) {
+      selectedPlateNumber = selectedVehicle!.plateNum;
+    }
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(30),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const SizedBox(height: 60),
+              Text(
+                'Appointment',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.blue[800],
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                'Please fill up the form below completely and accurately.',
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              /// -- vehicle dropdown -- ///
+              DropdownButton<VehicleDetails>(
+                value: selectedVehicle,
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedVehicle = newValue;
+                    selectedPlateNumber = newValue?.plateNum ?? '';
+                  });
+                },
+                items: appState.vehicleDetails.map((vehicle) {
+                  return DropdownMenuItem<VehicleDetails>(
+                    value: vehicle,
+                    child: Text(vehicle.plateNum),
+                  );
+                }).toList(),
+                hint: selectedVehicle != null
+                    ? Text(selectedVehicle!.plateNum)
+                    : Text('Select a vehicle'),
+              ),
+
+              /// -- service details -- ///
+
+              TextField(
+                controller: odometerController,
+                decoration: const InputDecoration(
+                  labelText: 'Mileage before service',
+                ),
+                maxLength: 5,
+                keyboardType: TextInputType.number,
+              ),
+              TextFormField(
+                controller: serviceDateController,
+                decoration: const InputDecoration(
+                  labelText: 'Service Date',
+                  prefixIcon: Icon(Icons.calendar_month_rounded),
+                ),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  );
+                  if (pickedDate != null) {
+                    print(pickedDate);
+                    String formattedDate =
+                    DateFormat('MM/dd/yyyy').format(pickedDate);
+                    print(formattedDate);
+                    setState(() {
+                      serviceDateController.text = formattedDate;
+                    });
+                  } else {
+                    print('Date is not selected');
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the service date.';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: serviceTimeController,
+                decoration: const InputDecoration(
+                  labelText: 'Service Time',
+                  prefixIcon: Icon(Icons.access_time),
+                ),
+                readOnly: true,
+                onTap: () async {
+                  TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  if (pickedTime != null) {
+                    print(pickedTime);
+                    String formattedTime = pickedTime.format(context);
+                    print(formattedTime);
+                    setState(() {
+                      serviceTimeController.text = formattedTime;
+                    });
+                  } else {
+                    print('Time is not selected');
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the service time.';
+                  }
+                  return null;
+                },
+              ),
+              TextField(
+                controller: locationController,
+                decoration: const InputDecoration(
+                  labelText: 'Location of service',
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  _openFileExplorer();
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.upload, color: Colors.black54,),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Upload Receipt',
+                      style: TextStyle(
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade300),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20), // Adjust the value to control the roundness
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              /// -- text buttons -- ///
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      final String odometer = odometerController.text.trim();
+                      final String location = locationController.text.trim();
+                      final String serviceDate = serviceDateController.text.trim();
+                      final String serviceTime = serviceTimeController.text.trim();
+
+                      if (odometer.isNotEmpty &&
+                          location.isNotEmpty &&
+                          serviceDate.isNotEmpty &&
+                          serviceTime.isNotEmpty) {
+                        setState(() {
+                          odometerController.text = '';
+                          locationController.text = '';
+                          serviceDateController.text = '';
+                          serviceTimeController.text = '';
+
+                          serviceEntry.add(ServiceEntry(
+                            serviceType: '',
+                            odometer: odometer,
+                            serviceDate: serviceDate,
+                            serviceTime: serviceTime,
+                            location: location,
+                            plateNumber: selectedPlateNumber, // Store the selected plate number in the service entry
+                          ));
+                        });
+                      }
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(
+                        color: Colors.red[400],
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 40),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
 
   Widget serviceInput(String serviceType) {
@@ -508,9 +730,13 @@ class _VehicleServiceState extends State<VehicleService>
                     child: Text(vehicle.plateNum),
                   );
                 }).toList(),
-                hint: selectedVehicle != null ? Text(selectedVehicle!.plateNum) : Text('Select a vehicle'),
+                hint: selectedVehicle != null
+                    ? Text(selectedVehicle!.plateNum)
+                    : Text('Select a vehicle'),
               ),
+
               /// -- service details -- ///
+
               TextField(
                 controller: odometerController,
                 decoration: const InputDecoration(

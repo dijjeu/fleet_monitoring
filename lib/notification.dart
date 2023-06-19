@@ -1,4 +1,5 @@
 import 'package:fleet_monitoring/repositories/app_state.dart';
+import 'package:fleet_monitoring/repositories/service_entry.dart';
 import 'package:fleet_monitoring/repositories/user_repository.dart';
 import 'package:fleet_monitoring/repositories/vehicle.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class NotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     UserRepository? userData = Provider.of<AppState>(context).userData;
     VehicleDetails? vehicleDetail = Provider.of<AppState>(context).vehicleDetail;
+    List<ServiceEntry>? serviceEntries = Provider.of<AppState>(context).serviceEntries;
 
     String? registrationExpiryString = vehicleDetail?.regisExp;
     DateTime? registrationExpiryDate = registrationExpiryString != null
@@ -21,6 +23,11 @@ class NotificationScreen extends StatelessWidget {
     String? licenseExpiryString = userData?.licenseExpiry;
     DateTime? licenseExpiryDate = licenseExpiryString != null
         ? DateFormat('MM/dd/yyyy').parse(licenseExpiryString)
+        : null;
+
+    String? appointmentDateString = serviceEntries.isNotEmpty ? serviceEntries[0].serviceDate : null;
+    DateTime? appointmentDate = appointmentDateString != null
+        ? DateFormat('MM/dd/yyyy').parse(appointmentDateString)
         : null;
 
     List<ListTile> notificationListTiles = [];
@@ -88,8 +95,49 @@ class NotificationScreen extends StatelessWidget {
       );
     }
 
+    if (appointmentDate != null) {
+      DateTime today = DateTime.now();
+      DateTime fiveDaysFromNow = today.add(Duration(days: 5));
+      bool isAppointmentAlmost = appointmentDate.isBefore(fiveDaysFromNow);
+      bool isAppointmentDay = appointmentDate.year == today.year &&
+          appointmentDate.month == today.month &&
+          appointmentDate.day == today.day;
 
+      if (isAppointmentAlmost) {
+        notificationListTiles.add(
+          ListTile(
+            leading: Icon(Icons.calendar_today),
+            title: Text(
+              'Appointment',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.blue[800],
+              ),
+            ),
+            subtitle: Text(
+              'You have an appointment on ${DateFormat('MM/dd/yyyy').format(appointmentDate)}',
+            ),
+          ),
+        );
+      } else if (isAppointmentDay) {
+        notificationListTiles.add(
+          ListTile(
+            leading: Icon(Icons.calendar_today),
+            title: Text(
+              'Appointment',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.blue[800],
+              ),
+            ),
+            subtitle: Text(
+              'You have an appointment today, ${DateFormat('MM/dd/yyyy').format(appointmentDate)}',
+            ),
+          ),
+        );
+      }
 
+    }
 
     return Scaffold(
       body: notificationListTiles.isNotEmpty

@@ -1,4 +1,6 @@
-class ServiceEntry {
+import 'package:flutter/cupertino.dart';
+
+class ServiceEntry with ChangeNotifier{
   final String serviceType;
   final String odometer;
   final String serviceDate;

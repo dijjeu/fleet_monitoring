@@ -1,9 +1,6 @@
-import 'package:fleet_monitoring/login/login.dart';
-import 'package:fleet_monitoring/notification.dart';
 import 'package:fleet_monitoring/repositories/app_state.dart';
 import 'package:fleet_monitoring/repositories/vehicle.dart';
 import 'package:fleet_monitoring/vehicle/vehicle_entry.dart';
-import 'package:fleet_monitoring/vehicle/vehicle_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';

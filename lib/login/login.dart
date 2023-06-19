@@ -114,9 +114,7 @@ class _LoginState extends State<Login> {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        if (Authentication.getLoggedInUser() != null) {
-                          _login();
-                        }
+                        _login();
                         //_login();
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(

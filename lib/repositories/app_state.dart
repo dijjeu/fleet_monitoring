@@ -1,3 +1,4 @@
+import 'package:fleet_monitoring/repositories/service_entry.dart';
 import 'package:fleet_monitoring/repositories/user_repository.dart';
 import 'package:fleet_monitoring/repositories/vehicle.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,11 @@ import 'package:provider/provider.dart';
 class AppState extends ChangeNotifier {
   List<VehicleDetails> vehicleDetails = List.empty(growable: true);
   List<VehicleDetails> allVehicles = List.empty(growable: true);
+  List<ServiceEntry> _serviceEntries = [];
+
+  List<ServiceEntry> get serviceEntries => _serviceEntries;
+
+
 
   UserRepository? _userData;
   UserRepository? get userData => _userData;
@@ -21,6 +27,11 @@ class AppState extends ChangeNotifier {
 
   void setVehicleDetail(VehicleDetails vehicleDetail) {
     _vehicleDetail = vehicleDetail;
+    notifyListeners();
+  }
+
+  setServiceEntries(List<ServiceEntry> entries) {
+    _serviceEntries = entries;
     notifyListeners();
   }
 

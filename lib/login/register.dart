@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../home.dart';
 import '../login/login.dart';
-import '../profile_screen.dart';
 import '../repositories/app_state.dart';
 import '../repositories/user_repository.dart';
 
