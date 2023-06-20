@@ -24,8 +24,6 @@ class _HomeState extends State<Home> {
   ];
 
 
-  static String? get payload => null;
-
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
