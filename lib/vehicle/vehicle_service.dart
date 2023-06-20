@@ -94,6 +94,130 @@ class _VehicleServiceState extends State<VehicleService>
   }
 
   Widget buildServicesTab() {
+    List<Widget> serviceCards = [
+      ServiceCard(
+        title: 'Periodic Maintenance Schedule',
+        image: 'assets/images/maintenance.png',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  serviceInput('Periodic Maintenance Schedule'),
+            ),
+          );
+        },
+      ),
+      ServiceCard(
+        title: 'Wiper Blades Replacement',
+        image: 'assets/images/wiper.png',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => serviceInput('Wiper Blades Replacement'),
+            ),
+          );
+        },
+      ),
+      ServiceCard(
+        title: 'New Battery',
+        image: 'assets/images/car-battery.png',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => serviceInput('New Battery'),
+            ),
+          );
+        },
+      ),
+      ServiceCard(
+        title: 'Air Filter Replacement',
+        image: 'assets/images/air-filter.png',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => serviceInput('Air Filter Replacement'),
+            ),
+          );
+        },
+      ),
+      ServiceCard(
+        title: 'Tire Replacement',
+        image: 'assets/images/tires.png',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => serviceInput('Tire Replacement'),
+            ),
+          );
+        },
+      ),
+      ServiceCard(
+        title: 'Tire Alignment/Balance',
+        image: 'assets/images/wheel.png',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => serviceInput('Tire Alignment/Balance'),
+            ),
+          );
+        },
+      ),
+    ];
+
+    if (!appointmentSet) {
+      serviceCards.add(
+        ServiceCard(
+          title: 'Appointments',
+          image: 'assets/images/appointment.png',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => appointmentForm((submitted) {
+                  setState(() {
+                    appointmentSet = submitted;
+                  });
+                }),
+              ),
+            );
+          },
+        ),
+      );
+    }
+
+    serviceCards.addAll([
+      ServiceCard(
+        title: 'Repairs',
+        image: 'assets/images/repair.png',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => serviceInput('Repairs'),
+            ),
+          );
+        },
+      ),
+      ServiceCard(
+        title: 'Others',
+        image: 'assets/images/more.png',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => serviceInput('Others'),
+            ),
+          );
+        },
+      ),
+    ]);
+
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -120,123 +244,7 @@ class _VehicleServiceState extends State<VehicleService>
             height: 600,
             child: GridView.count(
               crossAxisCount: 3,
-              children: <Widget>[
-                ServiceCard(
-                  title: 'Periodic Maintenance Schedule',
-                  image: 'assets/images/maintenance.png',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            serviceInput('Periodic Maintenance Schedule'),
-                      ),
-                    );
-                  },
-                ),
-                ServiceCard(
-                  title: 'Wiper Blades Replacement',
-                  image: 'assets/images/wiper.png',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            serviceInput('Wiper Blades Replacement'),
-                      ),
-                    );
-                  },
-                ),
-                ServiceCard(
-                  title: 'New Battery',
-                  image: 'assets/images/car-battery.png',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => serviceInput('New Battery'),
-                      ),
-                    );
-                  },
-                ),
-                ServiceCard(
-                  title: 'Air Filter Replacement',
-                  image: 'assets/images/air-filter.png',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            serviceInput('Air Filter Replacement'),
-                      ),
-                    );
-                  },
-                ),
-                ServiceCard(
-                  title: 'Tire Replacement',
-                  image: 'assets/images/tires.png',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => serviceInput('Tire Replacement'),
-                      ),
-                    );
-                  },
-                ),
-                ServiceCard(
-                  title: 'Tire Alignment/Balance',
-                  image: 'assets/images/wheel.png',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            serviceInput('Tire Alignment/Balance'),
-                      ),
-                    );
-                  },
-                ),
-
-                /// -- APPOINTMENT -- ///
-                if (showAppointmentCard) // Conditionally render the appointment card
-                  ServiceCard(
-                    title: 'Appointments',
-                    image: 'assets/images/appointment.png',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => appointmentForm(),
-                        ),
-                      );
-                    },
-                  ),
-                ServiceCard(
-                  title: 'Repairs',
-                  image: 'assets/images/repair.png',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => serviceInput('Repairs'),
-                      ),
-                    );
-                  },
-                ),
-                ServiceCard(
-                  title: 'Others',
-                  image: 'assets/images/more.png',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => serviceInput('Others'),
-                      ),
-                    );
-                  },
-                ),
-              ],
+              children: serviceCards,
             ),
           ),
         ],
@@ -274,12 +282,14 @@ class _VehicleServiceState extends State<VehicleService>
               : ListView.builder(
             shrinkWrap: true,
             itemCount: serviceEntry.length,
-            itemBuilder: (context, index) => getRow(index, selectedPlateNumber),
+            itemBuilder: (context, index) =>
+                getRow(index, serviceEntry[index].plateNumber),
           ),
         ],
       ),
     );
   }
+
 
 
 
@@ -420,7 +430,6 @@ class _VehicleServiceState extends State<VehicleService>
     }
   }
 
-
   Widget getRow(int index, String plateNumber) {
     final ServiceEntry entry = serviceEntry[index];
     return GestureDetector(
@@ -430,7 +439,7 @@ class _VehicleServiceState extends State<VehicleService>
           entry.serviceDate,
           entry.serviceTime,
           entry.location,
-          selectedPlateNumber,
+          plateNumber, // Use the plateNumber parameter instead of selectedPlateNumber
         );
       },
       child: Card(
@@ -439,7 +448,7 @@ class _VehicleServiceState extends State<VehicleService>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                entry.plateNumber,
+                plateNumber, // Use the plateNumber parameter instead of entry.plateNumber
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text('${entry.serviceType}'),
@@ -450,10 +459,10 @@ class _VehicleServiceState extends State<VehicleService>
         ),
       ),
     );
-
   }
 
-  Widget appointmentForm() {
+
+  Widget appointmentForm(Null Function(dynamic submitted) param0) {
     final appState = Provider.of<AppState>(context);
     if (selectedVehicle != null) {
       selectedPlateNumber = selectedVehicle!.plateNum;
@@ -508,7 +517,6 @@ class _VehicleServiceState extends State<VehicleService>
               ),
 
               /// -- service details -- ///
-
               TextField(
                 controller: odometerController,
                 decoration: const InputDecoration(
@@ -619,7 +627,7 @@ class _VehicleServiceState extends State<VehicleService>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
+                  TextButton(
                     onPressed: () async {
                       final String odometer = odometerController.text.trim();
                       final String location = locationController.text.trim();
@@ -730,11 +738,8 @@ class _VehicleServiceState extends State<VehicleService>
                     child: Text(vehicle.plateNum),
                   );
                 }).toList(),
-                hint: selectedVehicle != null
-                    ? Text(selectedVehicle!.plateNum)
-                    : Text('Select a vehicle'),
+                hint: Text(selectedVehicle?.plateNum ?? 'Select a vehicle'),
               ),
-
               /// -- service details -- ///
 
               TextField(
@@ -847,7 +852,7 @@ class _VehicleServiceState extends State<VehicleService>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
+                  TextButton(
                     onPressed: () async {
                       final String odometer = odometerController.text.trim();
                       final String location = locationController.text.trim();

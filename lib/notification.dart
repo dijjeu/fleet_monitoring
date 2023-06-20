@@ -74,27 +74,7 @@ class NotificationScreen extends StatelessWidget {
         );
       }
     }
-
-    // Add expired vehicles to the notificationListTiles
-    List<VehicleDetails> expiredVehicles = Provider.of<AppState>(context).vehicleDetails;
-    for (var vehicle in expiredVehicles) {
-      notificationListTiles.add(
-        ListTile(
-          leading: Icon(Icons.warning, color: Colors.red[400]),
-          title: Text(
-            'Vehicle Registration Expiry: ${vehicle.regisExp}',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.red[400],
-            ),
-          ),
-          subtitle: Text(
-            'Your vehicle registration is expired for ${vehicle.plateNum}. Please avoid using the vehicle and renew as soon as possible!',
-          ),
-        ),
-      );
-    }
-
+    /// -- APPOINTMENT -- ///
     if (appointmentDate != null) {
       DateTime today = DateTime.now();
       DateTime fiveDaysFromNow = today.add(Duration(days: 5));
@@ -136,7 +116,26 @@ class NotificationScreen extends StatelessWidget {
           ),
         );
       }
+    }
 
+    // Add expired vehicles to the notificationListTiles
+    List<VehicleDetails> expiredVehicles = Provider.of<AppState>(context).vehicleDetails;
+    for (var vehicle in expiredVehicles) {
+      notificationListTiles.add(
+        ListTile(
+          leading: Icon(Icons.warning, color: Colors.red[400]),
+          title: Text(
+            'Vehicle Registration Expiry: ${vehicle.regisExp}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.red[400],
+            ),
+          ),
+          subtitle: Text(
+            'Your vehicle registration is expired for ${vehicle.plateNum}. Please avoid using the vehicle and renew as soon as possible!',
+          ),
+        ),
+      );
     }
 
     return Scaffold(
