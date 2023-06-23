@@ -463,11 +463,8 @@ class _VehicleServiceState extends State<VehicleService>
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Appointment', // Display 'Appointment' as the title
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text('$plateNumber'),
+                Text('$plateNumber', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('Appointment'),
                 Text('${entry.serviceDate} - ${entry.serviceTime}'),
               ],
             ),
@@ -509,6 +506,9 @@ class _VehicleServiceState extends State<VehicleService>
   Widget appointmentForm(Null Function(dynamic submitted) param0) {
     final appState = Provider.of<AppState>(context);
     if (selectedVehicle != null) {
+      selectedPlateNumber = selectedVehicle!.plateNum;
+    } else if (appState.vehicleDetails.isNotEmpty) {
+      selectedVehicle = appState.vehicleDetails[0];
       selectedPlateNumber = selectedVehicle!.plateNum;
     }
     return Scaffold(
@@ -680,10 +680,8 @@ class _VehicleServiceState extends State<VehicleService>
                     onPressed: () async {
                       final String odometer = odometerController.text.trim();
                       final String location = locationController.text.trim();
-                      final String serviceDate =
-                          serviceDateController.text.trim();
-                      final String serviceTime =
-                          serviceTimeController.text.trim();
+                      final String serviceDate = serviceDateController.text.trim();
+                      final String serviceTime = serviceTimeController.text.trim();
 
                       if (odometer.isNotEmpty &&
                           location.isNotEmpty &&
@@ -696,13 +694,12 @@ class _VehicleServiceState extends State<VehicleService>
                           serviceTimeController.text = '';
 
                           serviceEntry.add(ServiceEntry(
-                            serviceType: '',
+                            serviceType: 'Appointments', // Set the serviceType to 'Appointments'
                             odometer: odometer,
                             serviceDate: serviceDate,
                             serviceTime: serviceTime,
                             location: location,
-                            plateNumber:
-                                selectedPlateNumber, // Store the selected plate number in the service entry
+                            plateNumber: selectedPlateNumber,
                           ));
                         });
                       }

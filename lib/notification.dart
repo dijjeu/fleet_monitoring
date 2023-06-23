@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:fleet_monitoring/repositories/app_state.dart';
 import 'package:fleet_monitoring/repositories/service_entry.dart';
 import 'package:fleet_monitoring/repositories/user_repository.dart';
@@ -13,12 +12,19 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserRepository? userData = Provider.of<AppState>(context).userData;
-    VehicleDetails? vehicleDetail =
-        Provider.of<AppState>(context).vehicleDetail;
+
     List<ServiceEntry>? serviceEntries =
         Provider.of<AppState>(context).serviceEntries;
 
+    // Call setServiceEntries to populate the serviceEntries list
+    Provider.of<AppState>(context, listen: false)
+        .setServiceEntries(serviceEntries!);
+
+    VehicleDetails? vehicleDetail =
+        Provider.of<AppState>(context).vehicleDetail;
+
     String? registrationExpiryString = vehicleDetail?.regisExp;
+
 
     String? licenseExpiryString = userData?.licenseExpiry;
     DateTime? licenseExpiryDate = licenseExpiryString != null
@@ -189,61 +195,67 @@ class NotificationScreen extends StatelessWidget {
   }
 
   void apptList(BuildContext context, Queue<ListTile> notificationListTiles) {
-    List<ServiceEntry> appointmentVehicles =
+    List<ServiceEntry>? appointmentVehicles =
         Provider.of<AppState>(context).serviceEntries;
-    for (var appointment in appointmentVehicles) {
+
+    if (appointmentVehicles != null && appointmentVehicles.isNotEmpty) {
       DateTime today = DateTime.now();
       DateTime thirtyDaysFromNow = today.add(Duration(days: 30));
 
-      // Parse appointment date string into DateTime object
-      DateTime? appointmentDate = appointment.serviceDate != null
-          ? DateFormat('MM/dd/yyyy').parse(appointment.serviceDate)
-          : null;
+      for (var appointment in appointmentVehicles) {
+        DateTime? appointmentDate = appointment.serviceDate != null
+            ? DateFormat('MM/dd/yyyy').parse(appointment.serviceDate)
+            : null;
 
-      bool isAppointmentAlmost = appointmentDate != null &&
-          appointmentDate.isBefore(thirtyDaysFromNow);
-      bool isAppointmentToday = appointmentDate != null &&
-          appointmentDate.year == today.year &&
-          appointmentDate.month == today.month &&
-          appointmentDate.day == today.day;
+        bool isAppointmentAlmost = appointmentDate != null &&
+            appointmentDate.isBefore(thirtyDaysFromNow);
+        bool isAppointmentToday = appointmentDate != null &&
+            appointmentDate.year == today.year &&
+            appointmentDate.month == today.month &&
+            appointmentDate.day == today.day;
 
-      if (isAppointmentToday) {
-        notificationListTiles.addLast(
-          ListTile(
-            leading:
-            Icon(Icons.calendar_today_rounded, color: Colors.blue[800]),
-            title: Text(
-              'Appointment: ${appointment.serviceDate}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.blue[800],
+        if (isAppointmentToday) {
+          notificationListTiles.addLast(
+            ListTile(
+              leading:
+              Icon(Icons.calendar_today_rounded, color: Colors.blue[800]),
+              title: Text(
+                'Appointment: ${appointment.serviceDate}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue[800],
+                ),
+              ),
+              subtitle: Text(
+                'You have an appointment today for ${appointment.plateNumber} on ${appointment.serviceTime}!',
               ),
             ),
-            subtitle: Text(
-              'You have an appointment today for ${appointment.plateNumber} on ${appointment.serviceTime}!',
-            ),
-          ),
-        );
-      } else if (isAppointmentAlmost) {
-        notificationListTiles.addLast(
-          ListTile(
-            leading: Icon(
-              Icons.calendar_today_rounded,
-              color: Colors.blue[800],
-            ),
-            title: Text(
-              'Appointment: ${DateFormat('MM/dd/yyyy').format(appointmentDate)}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.blue[800],
+          );
+        } else if (isAppointmentAlmost) {
+          notificationListTiles.addLast(
+            ListTile(
+              leading:
+              Icon(Icons.calendar_today_rounded, color: Colors.blue[800]),
+              title: Text(
+                'Appointment: ${DateFormat('MM/dd/yyyy').format(appointmentDate!)}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue[800],
+                ),
+              ),
+              subtitle: Text(
+                'You have an appointment on ${DateFormat('MM/dd/yyyy').format(appointmentDate!)} at ${appointment.serviceTime}',
               ),
             ),
-            subtitle: Text(
-              'You have an appointment on ${DateFormat('MM/dd/yyyy').format(appointmentDate)} at ${appointment.serviceTime}',
-            ),
-          ),
-        );
+          );
+        }
       }
+    } else {
+      notificationListTiles.addLast(
+        ListTile(
+          title: Text('No appointments'),
+        ),
+      );
     }
   }
 }
