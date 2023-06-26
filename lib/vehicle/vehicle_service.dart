@@ -28,8 +28,7 @@ class _VehicleServiceState extends State<VehicleService>
 
   bool appointmentSet = false;
   DateTime appointmentDate = DateTime.now().add(Duration(days: 7));
-  bool showAppointmentCard =
-      true; // Set this variable to true to show the appointment card
+  bool showAppointmentCard = true; // Set this variable to true to show the appointment card
 
   List<ServiceEntry> serviceEntry = [];
   List<String> appointmentNotification = [];
@@ -40,11 +39,11 @@ class _VehicleServiceState extends State<VehicleService>
 
   /// --- APPOINTMENT --- ///
 
+
   @override
   void initState() {
     super.initState();
-    Provider.of<AppState>(context, listen: false)
-        .setServiceEntries(serviceEntry);
+    Provider.of<AppState>(context, listen: false).setServiceEntries(serviceEntry);
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -273,31 +272,34 @@ class _VehicleServiceState extends State<VehicleService>
           const SizedBox(height: 10),
           serviceEntry.isEmpty
               ? Text(
-                  'No reports listed yet',
-                  style: GoogleFonts.poppins(
-                    color: Colors.black54,
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                  ),
-                )
+            'No reports listed yet',
+            style: GoogleFonts.poppins(
+              color: Colors.black54,
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+            ),
+          )
               : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: serviceEntry.length,
-                  itemBuilder: (context, index) =>
-                      getRow(index, serviceEntry[index].plateNumber),
-                ),
+            shrinkWrap: true,
+            itemCount: serviceEntry.length,
+            itemBuilder: (context, index) =>
+                getRow(index, serviceEntry[index].plateNumber),
+          ),
         ],
       ),
     );
   }
 
+
+
+
   void showServiceDialog(
-    String odometer,
-    String serviceDate,
-    String serviceTime,
-    String location,
-    String plateNumber,
-  ) {
+      String odometer,
+      String serviceDate,
+      String serviceTime,
+      String location,
+      String plateNumber,
+      ) {
     showDialog(
       context: context,
       builder: (context) {
@@ -319,29 +321,13 @@ class _VehicleServiceState extends State<VehicleService>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Mileage before service:'),
-              Center(
-                  child: Text(
-                '$odometer km',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )),
+              Center(child: Text('$odometer km', style: TextStyle(fontWeight: FontWeight.bold),)),
               Text('Service Date:'),
-              Center(
-                  child: Text(
-                '$serviceDate',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )),
+              Center(child: Text('$serviceDate', style: TextStyle(fontWeight: FontWeight.bold),)),
               Text('Service Time:'),
-              Center(
-                  child: Text(
-                '$serviceTime',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )),
+              Center(child: Text('$serviceTime', style: TextStyle(fontWeight: FontWeight.bold),)),
               Text('Location of Service:'),
-              Center(
-                  child: Text(
-                '$location',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )),
+              Center(child: Text('$location', style: TextStyle(fontWeight: FontWeight.bold),)),
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
@@ -353,10 +339,7 @@ class _VehicleServiceState extends State<VehicleService>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.remove_red_eye,
-                        color: Colors.black54,
-                      ),
+                      Icon(Icons.remove_red_eye, color: Colors.black54,),
                       const SizedBox(width: 10),
                       Text(
                         'View Receipt',
@@ -367,12 +350,10 @@ class _VehicleServiceState extends State<VehicleService>
                     ],
                   ),
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.grey.shade300),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade300),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            20), // Adjust the value to control the roundness
+                        borderRadius: BorderRadius.circular(20), // Adjust the value to control the roundness
                       ),
                     ),
                   ),
@@ -394,6 +375,7 @@ class _VehicleServiceState extends State<VehicleService>
       },
     );
   }
+
 
   Future<void> _openFileExplorer() async {
     try {
@@ -451,61 +433,35 @@ class _VehicleServiceState extends State<VehicleService>
 
   Widget getRow(int index, String plateNumber) {
     final ServiceEntry entry = serviceEntry[index];
-    if (entry.serviceType == 'Appointments') {
-      return GestureDetector(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => appointmentForm((submitted) => null)));
-        },
-        child: Card(
-          child: ListTile(
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Appointment', // Display 'Appointment' as the title
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text('$plateNumber'),
-                Text('${entry.serviceDate} - ${entry.serviceTime}'),
-              ],
-            ),
-            trailing: Icon(Icons.arrow_circle_right_outlined),
+    return GestureDetector(
+      onTap: () {
+        showServiceDialog(
+          entry.odometer,
+          entry.serviceDate,
+          entry.serviceTime,
+          entry.location,
+          plateNumber, // Use the plateNumber parameter instead of selectedPlateNumber
+        );
+      },
+      child: Card(
+        child: ListTile(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                plateNumber, // Use the plateNumber parameter instead of entry.plateNumber
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text('${entry.serviceType}'),
+              Text('${entry.serviceDate} - ${entry.serviceTime}'),
+            ],
           ),
+          trailing: Icon(Icons.arrow_circle_right_outlined),
         ),
-      );
-    } else {
-      return GestureDetector(
-        onTap: () {
-          showServiceDialog(
-            entry.odometer,
-            entry.serviceDate,
-            entry.serviceTime,
-            entry.location,
-            plateNumber,
-          );
-        },
-        child: Card(
-          child: ListTile(
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  plateNumber,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text('${entry.serviceType}'),
-                Text('${entry.serviceDate} - ${entry.serviceTime}'),
-              ],
-            ),
-            trailing: Icon(Icons.arrow_circle_right_outlined),
-          ),
-        ),
-      );
-    }
+      ),
+    );
   }
+
 
   Widget appointmentForm(Null Function(dynamic submitted) param0) {
     final appState = Provider.of<AppState>(context);
@@ -587,7 +543,7 @@ class _VehicleServiceState extends State<VehicleService>
                   if (pickedDate != null) {
                     print(pickedDate);
                     String formattedDate =
-                        DateFormat('MM/dd/yyyy').format(pickedDate);
+                    DateFormat('MM/dd/yyyy').format(pickedDate);
                     print(formattedDate);
                     setState(() {
                       serviceDateController.text = formattedDate;
@@ -647,10 +603,7 @@ class _VehicleServiceState extends State<VehicleService>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.upload,
-                      color: Colors.black54,
-                    ),
+                    Icon(Icons.upload, color: Colors.black54,),
                     const SizedBox(width: 10),
                     Text(
                       'Upload Receipt',
@@ -661,12 +614,10 @@ class _VehicleServiceState extends State<VehicleService>
                   ],
                 ),
                 style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.grey.shade300),
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade300),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          20), // Adjust the value to control the roundness
+                      borderRadius: BorderRadius.circular(20), // Adjust the value to control the roundness
                     ),
                   ),
                 ),
@@ -681,10 +632,8 @@ class _VehicleServiceState extends State<VehicleService>
                     onPressed: () async {
                       final String odometer = odometerController.text.trim();
                       final String location = locationController.text.trim();
-                      final String serviceDate =
-                          serviceDateController.text.trim();
-                      final String serviceTime =
-                          serviceTimeController.text.trim();
+                      final String serviceDate = serviceDateController.text.trim();
+                      final String serviceTime = serviceTimeController.text.trim();
 
                       if (odometer.isNotEmpty &&
                           location.isNotEmpty &&
@@ -702,8 +651,7 @@ class _VehicleServiceState extends State<VehicleService>
                             serviceDate: serviceDate,
                             serviceTime: serviceTime,
                             location: location,
-                            plateNumber:
-                                selectedPlateNumber, // Store the selected plate number in the service entry
+                            plateNumber: selectedPlateNumber, // Store the selected plate number in the service entry
                           ));
                         });
                       }
@@ -741,6 +689,7 @@ class _VehicleServiceState extends State<VehicleService>
     );
   }
 
+
   Widget serviceInput(String serviceType) {
     final appState = Provider.of<AppState>(context);
     if (selectedVehicle != null) {
@@ -776,24 +725,22 @@ class _VehicleServiceState extends State<VehicleService>
               const SizedBox(height: 20),
 
               /// -- vehicle dropdown -- ///
-              DropdownButton<String>(
-                value: selectedPlateNumber,
+              DropdownButton<VehicleDetails>(
+                value: selectedVehicle,
                 onChanged: (newValue) {
                   setState(() {
-                    selectedPlateNumber = newValue!;
+                    selectedVehicle = newValue;
+                    selectedPlateNumber = newValue?.plateNum ?? '';
                   });
                 },
                 items: appState.vehicleDetails.map((vehicle) {
-                  return DropdownMenuItem<String>(
-                    value: vehicle.plateNum,
+                  return DropdownMenuItem<VehicleDetails>(
+                    value: vehicle,
                     child: Text(vehicle.plateNum),
                   );
                 }).toList(),
-                hint: selectedPlateNumber.isNotEmpty
-                    ? Text(selectedPlateNumber)
-                    : Text('Select a vehicle'),
+                hint: Text(selectedVehicle?.plateNum ?? 'Select a vehicle'),
               ),
-
               /// -- service details -- ///
 
               TextField(
@@ -881,13 +828,10 @@ class _VehicleServiceState extends State<VehicleService>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.upload,
-                      color: Colors.black54,
-                    ),
+                    Icon(Icons.upload, color: Colors.black54,),
                     const SizedBox(width: 10),
                     Text(
-                      'Upload Receipt',
+                        'Upload Receipt',
                       style: TextStyle(
                         color: Colors.black87,
                       ),
@@ -895,12 +839,10 @@ class _VehicleServiceState extends State<VehicleService>
                   ],
                 ),
                 style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.grey.shade300),
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade300),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          20), // Adjust the value to control the roundness
+                      borderRadius: BorderRadius.circular(20), // Adjust the value to control the roundness
                     ),
                   ),
                 ),
@@ -915,10 +857,8 @@ class _VehicleServiceState extends State<VehicleService>
                     onPressed: () async {
                       final String odometer = odometerController.text.trim();
                       final String location = locationController.text.trim();
-                      final String serviceDate =
-                          serviceDateController.text.trim();
-                      final String serviceTime =
-                          serviceTimeController.text.trim();
+                      final String serviceDate = serviceDateController.text.trim();
+                      final String serviceTime = serviceTimeController.text.trim();
 
                       if (odometer.isNotEmpty &&
                           location.isNotEmpty &&
@@ -936,8 +876,7 @@ class _VehicleServiceState extends State<VehicleService>
                             serviceDate: serviceDate,
                             serviceTime: serviceTime,
                             location: location,
-                            plateNumber:
-                                selectedPlateNumber, // Store the selected plate number in the service entry
+                            plateNumber: selectedPlateNumber, // Store the selected plate number in the service entry
                           ));
                         });
                       }

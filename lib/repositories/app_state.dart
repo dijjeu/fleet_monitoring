@@ -3,6 +3,7 @@ import 'package:fleet_monitoring/repositories/user_repository.dart';
 import 'package:fleet_monitoring/repositories/vehicle.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AppState extends ChangeNotifier {
   List<VehicleDetails> vehicleDetails = List.empty(growable: true);
@@ -11,12 +12,12 @@ class AppState extends ChangeNotifier {
 
   List<ServiceEntry> get serviceEntries => _serviceEntries;
 
-  UserRepository? _userData;
 
+
+  UserRepository? _userData;
   UserRepository? get userData => _userData;
 
   VehicleDetails? _vehicleDetail;
-
   VehicleDetails? get vehicleDetail => _vehicleDetail;
 
   void setUserData(UserRepository userData) {
@@ -37,8 +38,7 @@ class AppState extends ChangeNotifier {
   bool isRegistrationExpired() {
     if (_vehicleDetail != null) {
       final currentDate = DateTime.now();
-      final expiryDate =
-          DateFormat('MM/dd/yyyy').parse(_vehicleDetail!.regisExp);
+      final expiryDate = DateFormat('MM/dd/yyyy').parse(_vehicleDetail!.regisExp);
       return currentDate.isAfter(expiryDate);
     }
     return false;
