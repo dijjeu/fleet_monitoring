@@ -448,6 +448,7 @@ class _VehicleServiceState extends State<VehicleService>
     }
   }
 
+
   Widget getRow(int index, String plateNumber) {
     final ServiceEntry entry = serviceEntry[index];
     if (entry.serviceType == 'Appointments') {
