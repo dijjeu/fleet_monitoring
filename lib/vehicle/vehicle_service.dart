@@ -433,39 +433,66 @@ class _VehicleServiceState extends State<VehicleService>
 
   Widget getRow(int index, String plateNumber) {
     final ServiceEntry entry = serviceEntry[index];
-    return GestureDetector(
-      onTap: () {
-        showServiceDialog(
-          entry.odometer,
-          entry.serviceDate,
-          entry.serviceTime,
-          entry.location,
-          plateNumber, // Use the plateNumber parameter instead of selectedPlateNumber
-        );
-      },
-      child: Card(
-        child: ListTile(
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                plateNumber, // Use the plateNumber parameter instead of entry.plateNumber
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text('${entry.serviceType}'),
-              Text('${entry.serviceDate} - ${entry.serviceTime}'),
-            ],
+    if (entry.serviceType == 'Appointments') {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => appointmentForm((submitted) => null)));
+        },
+        child: Card(
+          child: ListTile(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('$plateNumber', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('Appointment'),
+                Text('${entry.serviceDate} - ${entry.serviceTime}'),
+              ],
+            ),
+            trailing: Icon(Icons.arrow_circle_right_outlined),
           ),
-          trailing: Icon(Icons.arrow_circle_right_outlined),
         ),
-      ),
-    );
+      );
+    } else {
+      return GestureDetector(
+        onTap: () {
+          showServiceDialog(
+            entry.odometer,
+            entry.serviceDate,
+            entry.serviceTime,
+            entry.location,
+            plateNumber,
+          );
+        },
+        child: Card(
+          child: ListTile(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  plateNumber,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text('${entry.serviceType}'),
+                Text('${entry.serviceDate} - ${entry.serviceTime}'),
+              ],
+            ),
+            trailing: Icon(Icons.arrow_circle_right_outlined),
+          ),
+        ),
+      );
+    }
   }
 
 
   Widget appointmentForm(Null Function(dynamic submitted) param0) {
     final appState = Provider.of<AppState>(context);
     if (selectedVehicle != null) {
+      selectedPlateNumber = selectedVehicle!.plateNum;
+    } else if (appState.vehicleDetails.isNotEmpty) {
+      selectedVehicle = appState.vehicleDetails[0];
       selectedPlateNumber = selectedVehicle!.plateNum;
     }
     return Scaffold(
@@ -502,6 +529,7 @@ class _VehicleServiceState extends State<VehicleService>
                 value: selectedVehicle,
                 onChanged: (newValue) {
                   setState(() {
+                    print(newValue!.plateNum);
                     selectedVehicle = newValue;
                     selectedPlateNumber = newValue?.plateNum ?? '';
                   });
@@ -646,7 +674,7 @@ class _VehicleServiceState extends State<VehicleService>
                           serviceTimeController.text = '';
 
                           serviceEntry.add(ServiceEntry(
-                            serviceType: '',
+                            serviceType: 'Appointment',
                             odometer: odometer,
                             serviceDate: serviceDate,
                             serviceTime: serviceTime,
