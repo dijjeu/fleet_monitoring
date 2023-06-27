@@ -30,12 +30,13 @@ class _VehicleServiceState extends State<VehicleService>
   DateTime appointmentDate = DateTime.now().add(Duration(days: 7));
   bool showAppointmentCard = true; // Set this variable to true to show the appointment card
 
+  VehicleDetails? selectedVehicle;
+  String selectedPlateNumber = '';
   List<ServiceEntry> serviceEntry = [];
   List<String> appointmentNotification = [];
-  VehicleDetails? selectedVehicle;
   late String plateNumber = '';
   late String? selectedFilePath;
-  String selectedPlateNumber = '';
+
 
   /// --- APPOINTMENT --- ///
 
@@ -334,6 +335,12 @@ class _VehicleServiceState extends State<VehicleService>
                   onPressed: () {
                     if (selectedFilePath != null) {
                       OpenFile.open(selectedFilePath!);
+                    } else if(selectedFilePath == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('No receipt available'),
+                        ),
+                      );
                     }
                   },
                   child: Row(
@@ -489,11 +496,11 @@ class _VehicleServiceState extends State<VehicleService>
 
   Widget appointmentForm(Null Function(dynamic submitted) param0) {
     final appState = Provider.of<AppState>(context);
-    if (selectedVehicle != null) {
-      selectedPlateNumber = selectedVehicle!.plateNum;
-    } else if (appState.vehicleDetails.isNotEmpty) {
+    VehicleDetails? selectedVehicle;
+
+    if (appState.vehicleDetails.isNotEmpty) {
       selectedVehicle = appState.vehicleDetails[0];
-      selectedPlateNumber = selectedVehicle!.plateNum;
+      selectedPlateNumber = selectedVehicle.plateNum;
     }
     return Scaffold(
       body: Padding(
@@ -525,24 +532,29 @@ class _VehicleServiceState extends State<VehicleService>
               const SizedBox(height: 20),
 
               /// -- vehicle dropdown -- ///
-              DropdownButton<VehicleDetails>(
+              DropdownButtonFormField<VehicleDetails>(
+                key: Key(selectedVehicle?.plateNum ?? ''),
                 value: selectedVehicle,
-                onChanged: (newValue) {
-                  setState(() {
-                    print(newValue!.plateNum);
-                    selectedVehicle = newValue;
-                    selectedPlateNumber = newValue?.plateNum ?? '';
-                  });
-                },
                 items: appState.vehicleDetails.map((vehicle) {
                   return DropdownMenuItem<VehicleDetails>(
                     value: vehicle,
                     child: Text(vehicle.plateNum),
                   );
                 }).toList(),
-                hint: selectedVehicle != null
-                    ? Text(selectedVehicle!.plateNum)
-                    : Text('Select a vehicle'),
+                onChanged: (VehicleDetails? newValue) {
+                  setState(() {
+                    selectedVehicle = newValue;
+                    selectedPlateNumber = newValue?.plateNum ?? '';
+                    print('This is newValue: ${selectedVehicle?.plateNum}');
+                  });
+                },
+                onSaved: (VehicleDetails? newValue) {
+                  setState(() {
+                    selectedVehicle = newValue;
+                    selectedPlateNumber = newValue?.plateNum ?? '';
+                    print('This is newValue: ${selectedVehicle?.plateNum}');
+                  });
+                },
               ),
 
               /// -- service details -- ///
@@ -753,22 +765,32 @@ class _VehicleServiceState extends State<VehicleService>
               const SizedBox(height: 20),
 
               /// -- vehicle dropdown -- ///
-              DropdownButton<VehicleDetails>(
+              DropdownButtonFormField<VehicleDetails>(
+                key: Key(selectedVehicle?.plateNum ?? ''),
                 value: selectedVehicle,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedVehicle = newValue;
-                    selectedPlateNumber = newValue?.plateNum ?? '';
-                  });
-                },
                 items: appState.vehicleDetails.map((vehicle) {
                   return DropdownMenuItem<VehicleDetails>(
                     value: vehicle,
                     child: Text(vehicle.plateNum),
                   );
                 }).toList(),
+                onChanged: (VehicleDetails? newValue) {
+                  setState(() {
+                    selectedVehicle = newValue;
+                    selectedPlateNumber = newValue?.plateNum ?? '';
+                    print('This is newValue: ${selectedVehicle?.plateNum}');
+                  });
+                },
+                onSaved: (VehicleDetails? newValue) {
+                  setState(() {
+                    selectedVehicle = newValue;
+                    selectedPlateNumber = newValue?.plateNum ?? '';
+                    print('This is newValue: ${selectedVehicle?.plateNum}');
+                  });
+                },
                 hint: Text(selectedVehicle?.plateNum ?? 'Select a vehicle'),
               ),
+
               /// -- service details -- ///
 
               TextField(
@@ -897,6 +919,7 @@ class _VehicleServiceState extends State<VehicleService>
                           locationController.text = '';
                           serviceDateController.text = '';
                           serviceTimeController.text = '';
+                          plateNumber = '';
 
                           serviceEntry.add(ServiceEntry(
                             serviceType: serviceType,
