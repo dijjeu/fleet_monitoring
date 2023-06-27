@@ -1,0 +1,22 @@
+FLEET MONITORING APP
+
+BUGS:
+
+- only one appointment will show after adding 2nd car vehicle
+
+-----------------------------------
+
+DONE:
+- display vehicle service details as alert dialog 
+- upload & display
+- separate DashboardScreen & VehicleService but still be able to access added vehicles from DashboardScreen
+- delete vehicle
+- user profile
+- driver's license expiry alert dialog
+- driver's license expiry in notification
+- vehicle registration expiry alert dialog
+- vehicle registration expiry in notification
+- diff plate number in reports tab
+- if vehicle isRegistrationAlmost = yellow
+- if appointment form is submitted = service type wont show up
+- - dropdown button (plate number) for services
